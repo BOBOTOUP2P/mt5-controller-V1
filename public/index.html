@@ -10,38 +10,32 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
     
-    <!-- Header -->
+    <!-- Header និង សញ្ញាតភ្ជាប់សកម្ម/បរាជ័យ -->
     <header class="border-b border-slate-900 bg-slate-900/50 backdrop-blur py-4 px-6">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-emerald-400">🏆 MT5 SMART TERMINAL</h1>
-            <!-- ប្រព័ន្ធបង្ហាញស្ថានភាពតភ្ជាប់ -->
-            <div id="connectionBadge" class="flex items-center gap-2 bg-slate-950 px-4 py-1.5 rounded-full border border-slate-900">
-                <span id="pingDot" class="w-3 h-3 rounded-full bg-slate-500 animate-ping"></span>
-                <span id="connectionText" class="text-sm text-slate-400">កំពុងពិនិត្យ...</span>
+            <h1 class="text-xl font-bold text-emerald-400">🏆 MT5 SMART CONTROLLER</h1>
+            <div id="vpsStatus" class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="text-sm text-rose-500 font-bold">ស្ពានតភ្ជាប់ VPS បរាជ័យ</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-4xl mx-auto w-full p-6 space-y-6">
         
-        <!-- Live Account Info Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-slate-900/50 border border-slate-900 p-4 rounded-xl text-center">
-                <p class="text-xs text-slate-500">សមតុល្យគណនី (Balance)</p>
-                <p id="liveBalance" class="text-xl font-bold text-slate-200 mt-1">$0.00</p>
+        <!-- ផ្ទាំងថ្មី៖ បង្ហាញសមតុល្យលុយពិតពី MT5 (Real-time Balance & Equity) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-900/60 border border-slate-900 p-5 rounded-2xl shadow-xl text-center">
+                <p class="text-xs text-slate-400">សមតុល្យគណនី (Balance)</p>
+                <p id="lblBalance" class="text-2xl font-bold text-emerald-400 mt-1">$0.00</p>
             </div>
-            <div class="bg-slate-900/50 border border-slate-900 p-4 rounded-xl text-center">
-                <p class="text-xs text-slate-500">ដើមទុនជាក់ស្តែង (Equity)</p>
-                <p id="liveEquity" class="text-xl font-bold text-slate-200 mt-1">$0.00</p>
+            <div class="bg-slate-900/60 border border-slate-900 p-5 rounded-2xl shadow-xl text-center">
+                <p class="text-xs text-slate-400">មូលធនបច្ចុប្បន្ន (Equity)</p>
+                <p id="lblEquity" class="text-2xl font-bold text-teal-400 mt-1">$0.00</p>
             </div>
-            <div class="bg-slate-900/50 border border-slate-900 p-4 rounded-xl text-center">
-                <p class="text-xs text-slate-500">លំដាប់ជួញដូរ (Active Order)</p>
-                <p id="liveOrders" class="text-xl font-bold text-emerald-400 mt-1">0</p>
-            </div>
-            <div class="bg-slate-900/50 border border-slate-900 p-4 rounded-xl text-center">
-                <p class="text-xs text-slate-500">ចំណេញ/ខាត (Net Profit)</p>
-                <p id="liveProfit" class="text-xl font-bold text-emerald-400 mt-1">$0.00</p>
+            <div class="bg-slate-900/60 border border-slate-900 p-5 rounded-2xl shadow-xl text-center">
+                <p class="text-xs text-slate-400">ការត្រេដកំពុងដំណើរការ (Positions)</p>
+                <p id="lblPositions" class="text-sm font-semibold text-slate-300 mt-2 truncate">No active trades</p>
             </div>
         </div>
 
@@ -51,7 +45,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm text-slate-400 mb-1">លេខគណនី (MT5 Login ID)</label>
-                        <input type="text" id="accId" value="414063265" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-emerald-400 focus:outline-none focus:border-emerald-500">
+                        <input type="text" id="accId" value="414063265" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-emerald-400 focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-sm text-slate-400 mb-1">ម៉ាស៊ីនបម្រើ (Broker Server)</label>
@@ -81,7 +75,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="mt-6 bg-slate-900/40 border border-slate-900 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <span class="text-slate-300 font-semibold">ស្ថានភាព EA៖</span>
                 <button id="eaToggle" onclick="toggleEA()" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-1.5 rounded-full text-sm font-semibold">សកម្ម (ACTIVE)</button>
@@ -94,11 +88,13 @@
 
     <script>
         let eaActive = 1;
+
         function toggleEA() {
             const btn = document.getElementById('eaToggle');
             if (eaActive === 1) { eaActive = 0; btn.innerText = "បិទ (DISABLED)"; btn.className = "bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-1.5 rounded-full text-sm font-semibold"; }
             else { eaActive = 1; btn.innerText = "សកម្ម (ACTIVE)"; btn.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-1.5 rounded-full text-sm font-semibold"; }
         }
+
         function syncToMT5() {
             const accId = document.getElementById('accId').value;
             const server = document.getElementById('server').value;
@@ -113,52 +109,30 @@
                 body: JSON.stringify({ accId, server, lot, tp, sl, active: eaActive, spread })
             })
             .then(res => res.text())
-            .then(data => { document.getElementById('statusConsole').innerText = "រក្សាទុកជោគជ័យ!"; })
-            .catch(err => { document.getElementById('statusConsole').innerText = "ការតភ្ជាប់បរាជ័យ!"; });
+            .then(data => { document.getElementById('statusConsole').innerText = "រក្សាទុកជោគជ័យ! EA ក្នុង MT5 នឹងទាញយកទិន្នន័យថ្មីនេះក្នុងរយៈពេល ២ វិនាទី។"; })
+            .catch(err => { document.getElementById('statusConsole').innerText = "ការតភ្ជាប់ទៅកាន់ Cloud បរាជ័យ!"; });
         }
 
-        // មុខងារទាញយកព័ត៌មានលុយពិតៗ និងស្កែនរកស្ថានភាពតភ្ជាប់
-        function fetchAccountStatus() {
+        // មុខងារទាញយកទិន្នន័យគណនីពិត និងស្ថានភាពតភ្ជាប់ពី MT5 រៀងរាល់ ២ វិនាទីម្តង
+        function fetchMT5Status() {
             fetch('/get-status')
             .then(res => res.json())
-            .then(resData => {
-                const conBadge = document.getElementById('connectionBadge');
-                const conText = document.getElementById('connectionText');
-                const pingDot = document.getElementById('pingDot');
-                
-                // ១. ប្តូរពណ៌ស្ថានភាព Online / Offline
-                if(resData.isOnline) {
-                    conText.innerText = "ស្ពានតភ្ជាប់ VPS សកម្ម";
-                    conText.className = "text-sm text-emerald-400";
-                    pingDot.className = "w-3 h-3 rounded-full bg-emerald-500 animate-ping";
-                    conBadge.className = "flex items-center gap-2 bg-slate-950 px-4 py-1.5 rounded-full border border-emerald-500/20";
-                } else {
-                    conText.innerText = "បរាជ័យ (OFFLINE)";
-                    conText.className = "text-sm text-rose-500";
-                    pingDot.className = "w-3 h-3 rounded-full bg-rose-600";
-                    conBadge.className = "flex items-center gap-2 bg-slate-950 px-4 py-1.5 rounded-full border border-rose-500/30";
-                }
+            .then(data => {
+                document.getElementById('lblBalance').innerText = `$${data.balance.toFixed(2)}`;
+                document.getElementById('lblEquity').innerText = `$${data.equity.toFixed(2)}`;
+                document.getElementById('lblPositions').innerText = data.positions;
 
-                // ២. បំបែកទិន្នន័យគណនីបង្ហាញលើកាត
-                const splitData = resData.data.split(',');
-                if(splitData.length >= 5) {
-                    document.getElementById('liveBalance').innerText = `$${parseFloat(splitData[0]).toFixed(2)}`;
-                    document.getElementById('liveEquity').innerText = `$${parseFloat(splitData[1]).toFixed(2)}`;
-                    document.getElementById('liveOrders').innerText = splitData[3];
-                    
-                    const profitVal = parseFloat(splitData[4]);
-                    const profitElement = document.getElementById('liveProfit');
-                    profitElement.innerText = `$${profitVal.toFixed(2)}`;
-                    if(profitVal > 0) { profitElement.className = "text-xl font-bold text-emerald-400 mt-1"; }
-                    else if(profitVal < 0) { profitElement.className = "text-xl font-bold text-rose-500 mt-1"; }
-                    else { profitElement.className = "text-xl font-bold text-slate-200 mt-1"; }
+                const statusDiv = document.getElementById('vpsStatus');
+                if(data.vpsActive) {
+                    statusDiv.innerHTML = `<span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span><span class="text-sm text-emerald-400 font-bold">ស្ពានតភ្ជាប់ VPS សកម្ម</span>`;
+                } else {
+                    statusDiv.innerHTML = `<span class="w-3 h-3 rounded-full bg-rose-500"></span><span class="text-sm text-rose-500 font-bold">ស្ពានតភ្ជាប់ VPS បរាជ័យ</span>`;
                 }
             })
-            .catch(err => console.error("Error fetching status:", err));
+            .catch(err => console.log("Error loading status"));
         }
 
-        // ដំណើរការស្ទូចទាញទិន្នន័យរៀងរាល់ ៣ វិនាទីម្តង
-        setInterval(fetchAccountStatus, 3000);
+        setInterval(fetchMT5Status, 2000); // ដំណើរការស្វ័យប្រវត្តរៀងរាល់ ២ វិនាទី
     </script>
 </body>
 </html>
