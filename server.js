@@ -6,59 +6,45 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('public'));
 
-let lastSeenTime = 0; // ពេលចុងក្រោយដែល MT5 ផ្ញើសារមក
-let mt5Stats = {
-    balance: 0.00,
-    equity: 0.00,
-    margin: 0.00,
+// Variables សម្រាប់រក្សាទុកទិន្នន័យបណ្តោះអាសន្ន
+let mt5Settings = "414063265,Exness-MT5Trial6,0.01,0.65,5.00,1,500";
+let mt5Data = {
+    balance: 0.0,
+    equity: 0.0,
     positions: [],
-    logs: []
+    logs: [],
+    last_ping: 0
 };
 
-// ១. ផ្លូវបង្ហាញទំព័រ Dashboard
+// ១. ទំព័រដើម Dashboard
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ២. API សម្រាប់ទទួលបញ្ជារក្សាទុកការកំណត់ពីវេបសាយ
+// ២. វេបសាយផ្ញើការកំណត់ទៅ MT5
 app.post('/save', (req, res) => {
     const { accId, server, lot, tp, sl, active, spread } = req.body;
-    const csvData = `${accId},${server},${lot},${tp},${sl},${active},${spread}`;
-    fs.writeFileSync(__dirname + '/settings.txt', csvData);
-    res.send("Saved successfully");
+    mt5Settings = `${accId},${server},${lot},${tp},${sl},${active},${spread}`;
+    res.send("Saved");
 });
 
-// ៣. API ទ្វេដង (2-Way Sync): MT5 ផ្ញើទិន្នន័យមកផង និងទទួលយកការកំណត់ថ្មីទៅវិញផងក្នុងពេលតែមួយ
-app.post('/sync', (req, res) => {
-    lastSeenTime = Date.now(); // កត់ត្រាពេលវេលាតភ្ជាប់
-    mt5Stats = req.body; // រក្សាទុកទិន្នន័យគណនីពី MT5
-    
-    // អានការកំណត់បច្ចុប្បន្នផ្ញើត្រឡប់ទៅឱ្យ MT5 វិញ
-    try {
-        const settings = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
-        res.send(settings);
-    } catch (err) {
-        res.send("414063265,Exness-MT5Trial6,0.01,0.65,5.00,1,500");
-    }
+// ៣. MT5 មកទាញយកការកំណត់ពីវេបសាយ
+app.get('/get-settings', (req, res) => {
+    res.send(mt5Settings);
 });
 
-// ៤. API សម្រាប់ឱ្យទំព័រវេបសាយទាញយកទិន្នន័យទៅបង្ហាញ (Real-time Stats)
-app.get('/get-realtime-data', (req, res) => {
-    let status = "Connecting"; // កំពុងតភ្ជាប់
-    const now = Date.now();
-    
-    if (lastSeenTime === 0) {
-        status = "Connecting";
-    } else if (now - lastSeenTime < 6000) {
-        status = "Active"; // ភ្ជាប់ជាប់ (តិចជាង ៦ វិនាទី)
-    } else {
-        status = "Failed"; // បរាជ័យ (លើសពី ៦ វិនាទី)
-    }
-    
-    res.json({
-        status: status,
-        stats: mt5Stats
-    });
+// ៤. API សម្រាប់ទទួលទិន្នន័យផ្ទាល់ពី MT5 (Balance, Positions, Logs)
+app.post('/update-terminal', (req, res) => {
+    mt5Data = req.body;
+    mt5Data.last_ping = Date.now(); // កត់ត្រាម៉ោងដែល MT5 បានផ្ញើសារមកចុងក្រោយ
+    res.send("Updated");
+});
+
+// ៥. API សម្រាប់ឱ្យវេបសាយ Dashboard មកទាញយកទិន្នន័យជួញដូរយកទៅបង្ហាញ
+app.get('/get-terminal-data', (req, res) => {
+    // គណនាស្ថានភាពស្ពានតភ្ជាប់ (បើតភ្ជាប់លើសពី 8 វិនាទីគ្មានការឆ្លើយតប គឺដាច់ការតភ្ជាប់)
+    const isOnline = (Date.now() - mt5Data.last_ping < 8000) ? "online" : "offline";
+    res.json({ ...mt5Data, status: isOnline });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
