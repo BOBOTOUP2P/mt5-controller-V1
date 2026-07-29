@@ -4,17 +4,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.text()); // អានអត្ថបទ CSV ពី MT5
 app.use(express.static('public'));
 
-let lastPollTime = Date.now(); // ពេលវេលាទាក់ទងចុងក្រោយពី MT5
+// បង្កើត Object សម្រាប់រក្សាទុកស្ថានភាពគណនីផ្ញើមកពី MT5
+let mt5Status = {
+    balance: 0.00,
+    equity: 0.00,
+    positions: "No active trades",
+    lastSeen: 0 // កត់ត្រាម៉ោងដែល MT5 បានផ្ញើសារមកចុងក្រោយ
+};
 
-// ១. ផ្លូវសម្រាប់បង្ហាញទំព័រវិបសាយ
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ២. វិបសាយបញ្ជូនការកំណត់ទៅ MT5
+// API សម្រាប់ទទួលការកំណត់ពី Web Dashboard
 app.post('/save', (req, res) => {
     const { accId, server, lot, tp, sl, active, spread } = req.body;
     const csvData = `${accId},${server},${lot},${tp},${sl},${active},${spread}`;
@@ -22,9 +26,8 @@ app.post('/save', (req, res) => {
     res.send("Saved successfully");
 });
 
-// ៣. MT5 ទាញយកការកំណត់ពី Cloud
+// API សម្រាប់ឱ្យ MT5 មកទាញយកការកំណត់
 app.get('/get-settings', (req, res) => {
-    lastPollTime = Date.now(); // អាប់ដេតពេលវេលាពេល MT5 មកសួរនាំ
     try {
         const data = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
         res.send(data);
@@ -33,27 +36,29 @@ app.get('/get-settings', (req, res) => {
     }
 });
 
-// ៤. MT5 ផ្ញើព័ត៌មានគណនីពិតៗមកកាន់ Cloud
+// ១. API ថ្មី៖ ទទួលទិន្នន័យសមតុល្យ និងការត្រេដផ្ញើមកពី MT5
 app.post('/update-status', (req, res) => {
-    const csvStatus = req.body; 
-    fs.writeFileSync(__dirname + '/status.txt', csvStatus);
+    mt5Status = {
+        balance: req.body.balance,
+        equity: req.body.equity,
+        positions: req.body.positions,
+        lastSeen: Date.now() // កត់ត្រាម៉ោងបច្ចុប្បន្ន
+    };
     res.send("Status updated");
 });
 
-// ៥. វិបសាយទាញយកទិន្នន័យគណនី និងស្ថានភាពតភ្ជាប់
+// ២. API ថ្មី៖ ផ្ញើព័ត៌មានគណនី និងស្ថានភាព VPS ទៅឱ្យទំព័រវេបសាយ HTML បង្ហាញ
 app.get('/get-status', (req, res) => {
     const now = Date.now();
-    const isOnline = (now - lastPollTime) < 10000; // បើលើសពី ១០ វិនាទី គឺ Offline
+    // បើ MT5 មិនបានផ្ញើសារមកលើសពី ៦ វិនាទី បញ្ជាក់ថា VPS ឬ MT5 បានបិទ (លោតសញ្ញាក្រហម បរាជ័យ)
+    const isAlive = (now - mt5Status.lastSeen) < 6000; 
     
-    let statusData = "0.0,0.0,0.0,0,0.0"; // តម្លៃលំនាំដើម
-    try {
-        statusData = fs.readFileSync(__dirname + '/status.txt', 'utf8');
-    } catch (err) {}
-
     res.json({
-        isOnline: isOnline,
-        data: statusData // ផ្ញើអត្ថបទ CSV ទៅឱ្យវិបសាយ
+        balance: mt5Status.balance,
+        equity: mt5Status.equity,
+        positions: mt5Status.positions,
+        vpsActive: isAlive
     });
 });
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
