@@ -3,220 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MT5 Institutional Controller</title>
+    <title>MT5 Real-Time Cloud Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Kantumruy Pro', sans-serif; } </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
 
-    <!-- Header -->
-    <header class="border-b border-slate-900 bg-slate-900/50 backdrop-blur py-4 px-6 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-emerald-400">🏆 MT5 INSTITUTIONAL CONTROLLER</h1>
-            <div id="vpsStatus" class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-slate-500"></span>
-                <span class="text-sm text-slate-400">កំពុងតភ្ជាប់...</span>
+    <!-- Header & ភ្លើងសញ្ញាតភ្ជាប់ -->
+    <header class="border-b border-slate-900 bg-slate-900/50 backdrop-blur py-4 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl font-bold text-emerald-400">🏆 MT5 SMART REAL-TIME CONTROLLER</h1>
+            <div class="flex items-center gap-2">
+                <span id="statusLight" class="w-3 h-3 rounded-full bg-yellow-500 animate-pulse"></span>
+                <span id="statusText" class="text-sm text-yellow-500 font-semibold">កំពុងតភ្ជាប់...</span>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-6xl mx-auto w-full p-4 md:p-6 space-y-6">
+    <main class="flex-grow max-w-6xl mx-auto w-full p-6 space-y-6">
         
-        <!-- Balance, Equity, Margin Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-                <span class="text-xs text-slate-500 uppercase">Balance (ប្រាក់សរុប)</span>
-                <h3 id="lblBalance" class="text-2xl font-bold text-slate-200 mt-1">$0.00</h3>
-            </div>
-            <div class="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-                <span class="text-xs text-slate-500 uppercase">Equity (ប្រាក់ជាក់ស្តែង)</span>
-                <h3 id="lblEquity" class="text-2xl font-bold text-emerald-400 mt-1">$0.00</h3>
-            </div>
-            <div class="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-                <span class="text-xs text-slate-500 uppercase">Margin (ប្រាក់ធានា)</span>
-                <h3 id="lblMargin" class="text-2xl font-bold text-slate-200 mt-1">$0.00</h3>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Left Side: Inputs -->
-            <div class="space-y-6">
-                <!-- Credentials -->
-                <div class="bg-slate-900/60 border border-slate-900 p-6 rounded-2xl shadow-xl">
-                    <h2 class="text-lg font-semibold text-slate-300 mb-4 border-b border-slate-800 pb-2">🔑 សោរផ្ទៀងផ្ទាត់គណនី MT5</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-sm text-slate-400">លេខគណនី MT5 ID</label>
-                            <input type="text" id="accId" value="414063265" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-emerald-400 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="text-sm text-slate-400">ម៉ាស៊ីនបម្រើ Server</label>
-                            <input type="text" id="server" value="Exness-MT5Trial6" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-slate-300 focus:outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Parameters -->
-                <div class="bg-slate-900/60 border border-slate-900 p-6 rounded-2xl shadow-xl">
-                    <h2 class="text-lg font-semibold text-slate-300 mb-4 border-b border-slate-800 pb-2">⚙️ កំណត់ប៉ារ៉ាម៉ែត្រជួញដូរ</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-sm text-slate-400">ទំហំ Lot size</label>
-                            <input type="number" id="lot" value="0.01" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-slate-300 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="text-sm text-slate-400">Spread អនុញ្ញាត</label>
-                            <input type="number" id="spread" value="500" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-slate-300 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="text-sm text-slate-400 text-emerald-400 font-bold">កាត់ចំណេញ TP ($)</label>
-                            <input type="number" id="tp" value="0.65" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-emerald-400 font-bold focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="text-sm text-slate-400 text-rose-400 font-bold">កាត់ខាត SL ($)</label>
-                            <input type="number" id="sl" value="5.00" step="0.1" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-rose-400 font-bold focus:outline-none">
-                        </div>
-                    </div>
-                    <div class="mt-6 flex justify-between items-center gap-4">
-                        <button id="eaToggle" onclick="toggleEA()" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-6 py-2 rounded-xl text-sm font-semibold">សកម្ម (ACTIVE)</button>
-                        <button onclick="syncToMT5()" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl transform active:scale-95 transition-all">💾 រក្សាទុកការកំណត់</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Live Monitor (Trade, Exposure, Logs) -->
-            <div class="bg-slate-900/60 border border-slate-900 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-semibold text-slate-300 mb-4 border-b border-slate-800 pb-2 flex justify-between">
-                        <span>📊 ម៉ូនីទ័រជួញដូរផ្សាយផ្ទាល់</span>
-                        <span id="lblOrdersCount" class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400">0 Positions</span>
-                    </h2>
-                    
-                    <!-- Live Orders Table -->
-                    <div class="overflow-x-auto max-h-[250px] overflow-y-auto mb-4">
-                        <table class="w-full text-sm text-left text-slate-400">
-                            <thead class="text-xs uppercase bg-slate-950 text-slate-500">
-                                <tr>
-                                    <th class="px-4 py-2">Ticket</th>
-                                    <th class="px-4 py-2">Type</th>
-                                    <th class="px-4 py-2">Volume</th>
-                                    <th class="px-4 py-2">Profit</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tblPositions">
-                                <tr><td colspan="4" class="text-center py-4 text-xs text-slate-600">គ្មានការបញ្ជាទិញកំពុងដំណើរការទេ</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Exposure Summary -->
-                <div class="border-t border-slate-800 pt-4">
-                    <h4 class="text-sm font-semibold text-slate-400 mb-2">Exposure (ទំហំហានិភ័យមាស)</h4>
-                    <div class="flex justify-between text-xs text-slate-500">
-                        <span>Total Lots: <strong id="lblTotalLots" class="text-slate-300">0.00</strong></span>
-                        <span>Net Profit: <strong id="lblNetProfit" class="text-emerald-400">+$0.00</strong></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Terminal Logs (Experts & Journal) -->
+        <!-- ប្រអប់ដើមទុន Real-Time -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-                <h4 class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">💻 Experts Log (អ្នកជំនាញ)</h4>
-                <div id="logExperts" class="bg-slate-950 p-3 rounded-lg text-xs font-mono text-emerald-500 h-[100px] overflow-y-auto">រង់ចាំទិន្នន័យ...</div>
+            <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider">សមតុល្យគណនី (Balance)</p>
+                    <h3 id="balanceVal" class="text-3xl font-bold text-slate-100 mt-1">$0.00</h3>
+                </div>
+                <span class="text-3xl">💵</span>
             </div>
-            <div class="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-                <h4 class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">📝 Journal Log (កំណត់ហេតុ)</h4>
-                <div id="logJournal" class="bg-slate-950 p-3 rounded-lg text-xs font-mono text-slate-400 h-[100px] overflow-y-auto">រង់ចាំទិន្នន័យ...</div>
+            <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider">ទ្រព្យសកម្មពិតប្រាកដ (Equity)</p>
+                    <h3 id="equityVal" class="text-3xl font-bold text-emerald-400 mt-1">$0.00</h3>
+                </div>
+                <span class="text-3xl">📈</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- ការកំណត់ជួញដូរ -->
+            <div class="bg-slate-900/60 border border-slate-900 p-6 rounded-2xl shadow-xl space-y-4">
+                <h2 class="text-md font-semibold text-slate-300 border-b border-slate-800 pb-2">⚙️ ការកំណត់ជួញដូរ</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Lot size</label>
+                        <input type="number" id="lot" value="0.01" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Spread អនុញ្ញាត</label>
+                        <input type="number" id="spread" value="500" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">កាត់ចំណេញ TP ($)</label>
+                        <input type="number" id="tp" value="0.65" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-emerald-400 font-bold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">កាត់ខាត SL ($)</label>
+                        <input type="number" id="sl" value="5.00" step="0.1" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-rose-400 font-bold focus:outline-none">
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button onclick="syncToMT5()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl transition-all">💾 រក្សាទុកការកំណត់</button>
+                </div>
+                <div class="flex justify-between items-center pt-2">
+                    <span class="text-xs text-slate-500">ស្ថានភាព EA៖</span>
+                    <button id="eaToggle" onclick="toggleEA()" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold">ACTIVE</button>
+                </div>
+            </div>
+
+            <!-- ផ្ទាំងបញ្ជាលំដាប់ជួញដូរ (Trade & Exposure) -->
+            <div class="lg:col-span-2 bg-slate-900/60 border border-slate-900 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <h2 class="text-md font-semibold text-slate-300 border-b border-slate-800 pb-2">📊 លំដាប់ជួញដូរបច្ចុប្បន្ន (Trade & Exposure)</h2>
+                <div class="flex-grow flex items-center justify-center p-6 bg-slate-950/60 rounded-xl my-4 border border-slate-900">
+                    <p id="positionsVal" class="text-sm text-emerald-400 font-mono text-center">គ្មានការជួញដូរសកម្មឡើយ</p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">ចំណាំ៖ ទិន្នន័យធ្វើបច្ចុប្បន្នភាពរៀងរាល់ ២ វិនាទីផ្ទាល់ពី VPS។</div>
+            </div>
+
+        </div>
+
+        <!-- ផ្ទាំងកំណត់ហេតុ (Experts & Journal) -->
+        <div class="bg-slate-900/60 border border-slate-900 p-6 rounded-2xl shadow-xl">
+            <h2 class="text-md font-semibold text-slate-300 border-b border-slate-800 pb-2 mb-4">💻 កំណត់ហេតុប្រព័ន្ធ (Experts & Journal Logs)</h2>
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 h-40 overflow-y-auto font-mono text-xs text-slate-400 space-y-1" id="logConsole">
+                [ប្រព័ន្ធ]៖ រង់ចាំការភ្ជាប់ពីកម្មវិធី MT5...
             </div>
         </div>
 
     </main>
 
+    <footer class="border-t border-slate-900 py-4 px-6 text-center text-xs text-slate-500 bg-slate-950">
+        © 2026 MT5 Remote Controller Bridge.
+    </footer>
+
     <script>
         let eaActive = 1;
+        
+        // វាយលេខសម្គាល់គណនីរបស់អ្នកនៅទីនេះដើម្បីផ្ទៀងផ្ទាត់សុវត្ថិភាព
+        const myAccount = "414063265";
+        const myServer = "Exness-MT5Trial6";
 
         function toggleEA() {
             const btn = document.getElementById('eaToggle');
-            if (eaActive === 1) { eaActive = 0; btn.innerText = "បិទ (DISABLED)"; btn.className = "bg-rose-500/20 text-rose-400 border border-rose-500/30 px-6 py-2 rounded-xl text-sm font-semibold"; }
-            else { eaActive = 1; btn.innerText = "សកម្ម (ACTIVE)"; btn.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-6 py-2 rounded-xl text-sm font-semibold"; }
+            if (eaActive === 1) { eaActive = 0; btn.innerText = "DISABLED"; btn.className = "bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1 rounded-full text-xs font-semibold"; }
+            else { eaActive = 1; btn.innerText = "ACTIVE"; btn.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold"; }
         }
 
         function syncToMT5() {
-            const accId = document.getElementById('accId').value;
-            const server = document.getElementById('server').value;
             const lot = document.getElementById('lot').value;
             const spread = document.getElementById('spread').value;
             const tp = document.getElementById('tp').value;
             const sl = document.getElementById('sl').value;
-
+            
             fetch('/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accId, server, lot, tp, sl, active: eaActive, spread })
+                body: JSON.stringify({ accId: myAccount, server: myServer, lot, tp, sl, active: eaActive, spread })
             });
         }
 
-        // ប្រព័ន្ធទាញយកទិន្នន័យពី MT5 មកបង្ហាញលើ Web រៀងរាល់ ១ វិនាទីម្តង
+        // មុខងារទាញយកទិន្នន័យពី MT5 រៀងរាល់ ២ វិនាទីម្តង
         setInterval(() => {
-            fetch('/get-state')
+            fetch('/get-status')
             .then(res => res.json())
             .then(data => {
-                // ១. ផ្ទៀងផ្ទាត់ការតភ្ជាប់ (Connection Status)
-                if (data.last_ping) {
-                    const diff = (Date.now() - new Date(data.last_ping).getTime()) / 1000;
-                    const statusDiv = document.getElementById('vpsStatus');
-                    if (diff < 5) {
-                        statusDiv.innerHTML = '<span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-sm text-emerald-400">ស្ពានតភ្ជាប់ VPS សកម្ម</span>';
-                    } else if (diff < 15) {
-                        statusDiv.innerHTML = '<span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span><span class="text-sm text-amber-400 font-semibold">កំពុងតភ្ជាប់...</span>';
-                    } else {
-                        statusDiv.innerHTML = '<span class="w-3 h-3 rounded-full bg-rose-500"></span><span class="text-sm text-rose-500">ការតភ្ជាប់បរាជ័យ</span>';
-                    }
-                }
-
-                // ២. បង្ហាញ Balance, Equity, Margin
-                document.getElementById('lblBalance').innerText = `$${data.balance.toFixed(2)}`;
-                document.getElementById('lblEquity').innerText = `$${data.equity.toFixed(2)}`;
-                document.getElementById('lblMargin').innerText = `$${data.margin.toFixed(2)}`;
-
-                // ៣. បង្ហាញប្រព័ន្ធជួញដូរ Positions Table
-                const tbody = document.getElementById('tblPositions');
-                document.getElementById('lblOrdersCount').innerText = `${data.positions.length} Positions`;
+                document.getElementById('balanceVal').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
+                document.getElementById('equityVal').innerText = `$${parseFloat(data.equity).toFixed(2)}`;
+                document.getElementById('positionsVal').innerText = data.positions;
                 
-                if (data.positions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-xs text-slate-600">គ្មានការបញ្ជាទិញកំពុងដំណើរការទេ</td></tr>';
-                    document.getElementById('lblTotalLots').innerText = "0.00";
-                    document.getElementById('lblNetProfit').innerText = "+$0.00";
-                } else {
-                    let html = '';
-                    let totalLots = 0;
-                    let totalProfit = 0;
-                    data.positions.forEach(pos => {
-                        totalLots += pos.volume;
-                        totalProfit += pos.profit;
-                        const pColor = pos.profit >= 0 ? 'text-emerald-400' : 'text-rose-400';
-                        html += `<tr class="border-b border-slate-950">
-                            <td class="px-4 py-2 text-xs">${pos.ticket}</td>
-                            <td class="px-4 py-2 text-xs font-semibold">${pos.type}</td>
-                            <td class="px-4 py-2 text-xs">${pos.volume}</td>
-                            <td class="px-4 py-2 text-xs ${pColor}">$${pos.profit.toFixed(2)}</td>
-                        </tr>`;
-                    });
-                    tbody.innerHTML = html;
-                    document.getElementById('lblTotalLots').innerText = totalLots.toFixed(2);
-                    document.getElementById('lblNetProfit').innerText = (totalProfit >= 0 ? '+' : '') + `$${totalProfit.toFixed(2)}`;
+                // បន្ថែម Log ចូលក្នុង Console
+                const consoleLog = document.getElementById('logConsole');
+                if(!consoleLog.innerText.includes(data.log)) {
+                    consoleLog.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${data.log}</div>`;
+                    consoleLog.scrollTop = consoleLog.scrollHeight;
                 }
 
-                // ៤. បង្ហាញ Logs
-                document.getElementById('logExperts').innerText = data.experts_log;
-                document.getElementById('logJournal').innerText = data.journal_log;
+                // គណនាភ្លើងសញ្ញាតភ្ជាប់ (ផ្ទៀងផ្ទាត់កាលបរិច្ឆេទ)
+                const diff = data.serverTime - data.lastPing;
+                const light = document.getElementById('statusLight');
+                const text = document.getElementById('statusText');
+
+                if (data.lastPing === 0) {
+                    light.className = "w-3 h-3 rounded-full bg-yellow-500 animate-pulse";
+                    text.innerText = "កំពុងតភ្ជាប់...";
+                    text.className = "text-sm text-yellow-500 font-semibold";
+                } else if (diff < 6000) { // បើក្រោម ៦ វិនាទី មានន័យថាសកម្ម
+                    light.className = "w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50";
+                    text.innerText = "ស្ពានតភ្ជាប់ VPS សកម្ម";
+                    text.className = "text-sm text-emerald-500 font-semibold";
+                } else {
+                    light.className = "w-3 h-3 rounded-full bg-rose-500 shadow-lg shadow-rose-500/50";
+                    text.innerText = "ស្ពានតភ្ជាប់ VPS បរាជ័យ";
+                    text.className = "text-sm text-rose-500 font-semibold";
+                }
             });
-        }, 1000);
+        }, 2000);
     </script>
 </body>
 </html>
