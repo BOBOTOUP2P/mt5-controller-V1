@@ -3,25 +3,25 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
-let mt5State = {
-    balance: 0,
-    equity: 0,
-    margin: 0,
-    positions: [],
-    last_ping: null,
-    experts_log: "រង់ចាំការតភ្ជាប់...",
-    journal_log: "រង់ចាំការតភ្ជាប់..."
+// រក្សាទុកទិន្នន័យបច្ចុប្បន្នភាពពី MT5 ក្នុង Memory
+let mt5Status = {
+    balance: "0.00",
+    equity: "0.00",
+    positions: "គ្មានការជួញដូរសកម្មឡើយ",
+    log: "កំពុងចាប់ផ្តើមប្រព័ន្ធ...",
+    lastPing: 0
 };
 
-// ១. ផ្លូវបង្ហាញទំព័រវេបសាយ
+// ទំព័រដើម Dashboard
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ២. វេបសាយរក្សាទុកការកំណត់
+// API សម្រាប់ទទួលបញ្ជាពីវិបសាយ ( Lot, TP, SL )
 app.post('/save', (req, res) => {
     const { accId, server, lot, tp, sl, active, spread } = req.body;
     const csvData = `${accId},${server},${lot},${tp},${sl},${active},${spread}`;
@@ -29,26 +29,34 @@ app.post('/save', (req, res) => {
     res.send("Saved");
 });
 
-// ៣. MT5 មកទាញយកការកំណត់
-app.get('/get-settings', (req, res) => {
+// API ពីរប៉ះគ្នា (POST)៖ MT5 ផ្ញើស្ថានភាពគណនីមក រួច Server ផ្ញើការកំណត់ជួញដូរត្រឡប់ទៅវិញភ្លាមៗ
+app.post('/update', (req, res) => {
+    const { balance, equity, positions, log } = req.body;
+    
+    // បច្ចុប្បន្នភាពទិន្នន័យពី MT5
+    mt5Status = {
+        balance: balance || "0.00",
+        equity: equity || "0.00",
+        positions: positions || "គ្មានការជួញដូរសកម្មឡើយ",
+        log: log || "EA កំពុងដំណើរការធម្មតា",
+        lastPing: Date.now()
+    };
+
+    // ផ្ញើការកំណត់ជួញដូរចុងក្រោយត្រឡប់ទៅឱ្យ MT5
     try {
-        const data = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
-        res.send(data);
+        const settings = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
+        res.send(settings);
     } catch (err) {
         res.send("414063265,Exness-MT5Trial6,0.01,0.65,5.00,1,500");
     }
 });
 
-// ៤. API សម្រាប់ឱ្យ MT5 ផ្ញើព័ត៌មានគណនីមកអាប់ដេតលើវិបសាយ
-app.post('/update-state', (req, res) => {
-    mt5State = req.body;
-    mt5State.last_ping = new Date().toISOString();
-    res.send("State Updated");
+// API សម្រាប់ទំព័រវិបសាយទាញយកទិន្នន័យ MT5 ទៅបង្ហាញ
+app.get('/get-status', (req, res) => {
+    res.json({
+        ...mt5Status,
+        serverTime: Date.now()
+    });
 });
 
-// ៥. វេបសាយទាញយកព័ត៌មានគណនី MT5 មកបង្ហាញ
-app.get('/get-state', (req, res) => {
-    res.json(mt5State);
-});
-
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server is running`));
