@@ -15,7 +15,6 @@
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold text-emerald-400">🏆 MT5 CLOUD CONTROLLER</h1>
             <div id="connectionStatus" class="flex items-center gap-2 bg-slate-950 px-4 py-1.5 rounded-full border border-slate-900">
-                <!-- កន្លែងបង្ហាញស្ថានភាពតភ្ជាប់ -->
                 <span class="text-sm text-amber-500">កំពុងតភ្ជាប់...</span>
             </div>
         </div>
@@ -95,14 +94,18 @@
     <script>
         let eaActive = 1;
 
-        // មុខងារទាញយកទិន្នន័យគណនី (Telemetry) ពី MT5
         function updateTelemetry() {
             fetch('/get-telemetry')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('webBalance').innerText = `$${data.balance}`;
-                document.getElementById('webEquity').innerText = `$${data.equity}`;
-                document.getElementById('webPositions').innerText = `${data.positions} Positions`;
+                // ប្រព័ន្ធការពារកុំឱ្យចេញ NaN និង null (បើគ្មានលេខទេ ឱ្យវាចេញ 0.00 ជំនួស)
+                const balance = (data.balance && !isNaN(data.balance)) ? parseFloat(data.balance).toFixed(2) : "0.00";
+                const equity = (data.equity && !isNaN(data.equity)) ? parseFloat(data.equity).toFixed(2) : "0.00";
+                const positions = (data.positions !== undefined && data.positions !== null) ? parseInt(data.positions) : 0;
+
+                document.getElementById('webBalance').innerText = `$${balance}`;
+                document.getElementById('webEquity').innerText = `$${equity}`;
+                document.getElementById('webPositions').innerText = `${positions} Positions`;
                 
                 const statusDiv = document.getElementById('connectionStatus');
                 if (data.status === "Active") {
@@ -117,7 +120,6 @@
             });
         }
 
-        // ឱ្យវារត់ស្កែនទាញយកទិន្នន័យរៀងរាល់ ២ វិនាទីម្តង
         setInterval(updateTelemetry, 2000);
 
         function toggleEA() {
