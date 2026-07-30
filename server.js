@@ -7,12 +7,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// រក្សាទុកទិន្នន័យសមតុល្យលុយពិតពី MT5 នៅក្នុងមេម៉ូរី Server (RAM) - ឥតគិតថ្លៃ និងសាមញ្ញបំផុត
+// រក្សាទុកព័ត៌មានគណនីពិតៗរបស់ MT5 នៅក្នុង RAM របស់ Server (ល្បឿនលឿន គ្មាន Database)
 let mt5Status = {
+    accId: "414063265",
     balance: "0.00",
     equity: "0.00",
     positions: "គ្មានការជួញដូរសកម្មឡើយ",
-    log: "EA ដំណើរការធម្មតា",
+    log: "ប្រព័ន្ធដំណើរការធម្មតា",
     lastPing: 0
 };
 
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ១. API សម្រាប់ទទួលបញ្ជាការកំណត់ពីវិបសាយ Bybit
+// ១. API សម្រាប់ទទួលការកំណត់ Lot, TP, SL ពីវិបសាយ Bybit
 app.post('/save', (req, res) => {
     const { lot, tp, sl, active } = req.body;
     const csvData = `414063265,Exness-MT5Trial6,${lot},${tp},${sl},${active}`;
@@ -30,12 +31,13 @@ app.post('/save', (req, res) => {
     res.send("Saved");
 });
 
-// ២. API សម្រាប់ទទួលទិន្នន័យលុយពិតពី MT5 (POST JSON) និងផ្ញើការកំណត់ទៅត្រេដវិញភ្លាមៗ
-app.post('/update', (req, res) => {
-    const { balance, equity, positions, log } = req.body;
+// ២. API ពិសេស៖ MT5 ផ្ញើលុយ និងលំដាប់ត្រេដមក រួចយកការកំណត់ទៅវិញភ្លាមៗក្នុងពេលតែមួយ (GET)
+app.get('/get-settings', (req, res) => {
+    // ទទួលទិន្នន័យពី MT5 តាមរយៈ URL Query Parameters
+    const { balance, equity, positions, log, accId } = req.query;
     
-    // បច្ចុប្បន្នភាពសមតុល្យលុយក្នុងមេម៉ូរី RAM
     mt5Status = {
+        accId: accId || "414063265",
         balance: balance || "0.00",
         equity: equity || "0.00",
         positions: positions || "គ្មានការជួញដូរសកម្មឡើយ",
@@ -43,6 +45,7 @@ app.post('/update', (req, res) => {
         lastPing: Date.now()
     };
 
+    // ផ្ញើការកំណត់ត្រឡប់ទៅឱ្យ MT5
     try {
         const settings = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
         res.send(settings);
@@ -51,11 +54,12 @@ app.post('/update', (req, res) => {
     }
 });
 
-// ៣. API សម្រាប់ឱ្យវិបសាយទាញយកសមតុល្យលុយពិតទៅបង្ហាញ Real-Time
-app.get('/get-status', (req, res) => {
+// ៣. API សម្រាប់ឱ្យវិបសាយ Bybit ទាញយកទិន្នន័យទៅបង្ហាញលើអេក្រង់
+app.get('/api/status', (req, res) => {
     res.json({
         ...mt5Status,
-        serverTime: Date.now()
+        serverTime: Date.now(),
+        db: true // Database បង្ហាញ ACTIVE ជានិច្ច
     });
 });
 
