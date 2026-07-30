@@ -18,9 +18,11 @@
     <!-- Top Navigation -->
     <header class="border-b border-[#2d3139] bg-[#12161a] py-3 px-6">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
                 <span class="text-[#ffb11a] text-xl font-bold tracking-wider">BYBIT</span>
-                <span class="text-slate-400 text-xs border-l border-slate-700 pl-2 font-mono">CLOUD TERMINAL</span>
+                <span class="text-slate-400 text-xs border-l border-slate-700 pl-2 font-mono">CLOUD</span>
+                <!-- បង្ហាញ MMT ID នៅខាងឆ្វេងខាងលើ -->
+                <span id="mmtIdDisplay" class="bg-amber-500/10 text-[#ffb11a] border border-amber-500/20 px-2 py-0.5 rounded text-[11px] font-mono font-bold">MMT-000000000</span>
             </div>
             <div class="flex items-center gap-1.5 bg-[#1e2329] px-3 py-1.5 rounded border border-[#2d3139] text-xs font-mono">
                 <span id="apiLight" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
@@ -55,30 +57,54 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             
             <!-- Left Side: Config Panel -->
-            <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded space-y-4 shadow-lg text-xs self-start">
-                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">⚙️ Config Parameters</h2>
+            <div class="space-y-4">
                 
-                <div class="space-y-3">
+                <!-- Exness Account Credentials -->
+                <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded space-y-3 shadow-lg text-xs">
+                    <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">🔑 EXNESS CONNECTION</h2>
                     <div>
-                        <label class="block text-slate-400 mb-1">Lot Size</label>
-                        <input type="number" id="lotSize" value="0.01" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none font-mono">
+                        <label class="block text-slate-400 mb-1">Server Name</label>
+                        <input type="text" id="exnessServer" value="Exness-MT5Trial7" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none font-mono">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">Target TP ($)</label>
-                        <input type="number" id="tp_usd" value="0.65" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#03c087] font-bold focus:outline-none font-mono">
+                        <label class="block text-slate-400 mb-1">Account ID</label>
+                        <input type="text" id="exnessAccount" value="433935345" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none font-mono">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">Max Loss SL ($)</label>
-                        <input type="number" id="sl_usd" value="5.00" step="0.1" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#f6465d] font-bold focus:outline-none font-mono">
+                        <label class="block text-slate-400 mb-1">Password</label>
+                        <input type="password" id="exnessPassword" value="Id168169" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none font-mono">
+                    </div>
+                    <div class="flex justify-between items-center pt-2 text-[11px]">
+                        <span class="text-slate-400">ស្ថានភាពគណនី៖</span>
+                        <span id="connStatus" class="text-yellow-500 font-bold uppercase">CONNECTING...</span>
                     </div>
                 </div>
 
-                <button id="regBtn" onclick="syncToMT5()" class="w-full bg-[#ffb11a] hover:bg-[#e09600] text-black font-bold py-2.5 rounded text-xs uppercase tracking-wider transition-all transform active:scale-[0.98]">
-                    💾 SAVE SETTINGS
-                </button>
+                <!-- Trading parameters -->
+                <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded space-y-4 shadow-lg text-xs">
+                    <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">⚙️ TRADING PARAMETERS</h2>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Lot Size</label>
+                            <input type="number" id="lotSize" value="0.01" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Target TP ($)</label>
+                            <input type="number" id="tp_usd" value="0.65" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#03c087] font-bold focus:outline-none font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Max Loss SL ($)</label>
+                            <input type="number" id="sl_usd" value="5.00" step="0.1" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#f6465d] font-bold focus:outline-none font-mono">
+                        </div>
+                    </div>
+
+                    <button id="regBtn" onclick="syncToMT5()" class="w-full bg-[#ffb11a] hover:bg-[#e09600] text-black font-bold py-2.5 rounded text-xs uppercase tracking-wider transition-all transform active:scale-[0.98]">
+                        💾 SAVE SETTINGS
+                    </button>
+                </div>
             </div>
 
-            <!-- Right Side: Navigation & Monitoring Tables -->
+            <!-- Right Side: Monitoring Tables -->
             <div class="lg:col-span-2 bg-[#12161a] border border-[#2d3139] rounded shadow-lg flex flex-col overflow-hidden min-h-[400px]">
                 
                 <!-- Tab Controls -->
@@ -158,6 +184,7 @@
     <script>
         let eaActive = 1;
         let activeTab = 'positions';
+        let currentMmtId = "MMT-000000000";
 
         function switchTab(tabName) {
             activeTab = tabName;
@@ -206,29 +233,73 @@
             const lot = document.getElementById('lotSize').value;
             const tp = document.getElementById('tp_usd').value;
             const sl = document.getElementById('sl_usd').value;
+            const serverName = document.getElementById('exnessServer').value;
+            const accountId = document.getElementById('exnessAccount').value;
+            const password = document.getElementById('exnessPassword').value;
 
             fetch('/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ lot, tp, sl, active: eaActive })
+                body: JSON.stringify({ 
+                    lot, 
+                    tp, 
+                    sl, 
+                    active: eaActive,
+                    serverName,
+                    accountId,
+                    password,
+                    mmtId: currentMmtId
+                })
             })
-            .then(res => res.text())
-            .then(() => {
+            .then(res => res.json())
+            .then(data => {
                 regBtn.innerText = "💾 SAVE SETTINGS";
                 regBtn.disabled = false;
+                if(data.status === "success") {
+                    currentMmtId = data.mmtId;
+                    document.getElementById('mmtIdDisplay').innerText = data.mmtId;
+                    alert("ការកំណត់ត្រូវបានរក្សាទុក និងបង្កើត MMT ID ជោគជ័យ!");
+                }
             });
         }
 
-        // Loop update គ្រប់ទិន្នន័យរៀងរាល់ ២ វិនាទី
+        // ចាប់ផ្តើមទាញយកទិន្នន័យដំបូងបង្អស់
+        fetch('/api/status')
+        .then(res => res.json())
+        .then(data => {
+            if(data.serverName) document.getElementById('exnessServer').value = data.serverName;
+            if(data.accountId) document.getElementById('exnessAccount').value = data.accountId;
+            if(data.password) document.getElementById('exnessPassword').value = data.password;
+            if(data.mmtId) {
+                currentMmtId = data.mmtId;
+                document.getElementById('mmtIdDisplay').innerText = data.mmtId;
+            }
+        });
+
+        // ត្រួតពិនិត្យ និងបន្ទាន់សម័យទិន្នន័យរៀងរាល់ ២ វិនាទី
         setInterval(() => {
             fetch('/api/status')
             .then(res => res.json())
             .then(data => {
-                // Update Balance/Equity
                 document.getElementById('balVal').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
                 document.getElementById('eqVal').innerText = `$${parseFloat(data.equity).toFixed(2)}`;
                 
-                // Active Positions UI render
+                // បង្ហាញស្ថានភាពតភ្ជាប់គណនី Exness ផ្អែកលើការ Ping របស់ MT5
+                const connStatus = document.getElementById('connStatus');
+                const diff = data.serverTime - data.lastPing;
+                
+                if (data.lastPing === 0) {
+                    connStatus.innerText = "DISCONNECTED";
+                    connStatus.className = "text-[#f6465d] font-bold uppercase";
+                } else if (diff < 6000) { 
+                    connStatus.innerText = "CONNECTED";
+                    connStatus.className = "text-[#03c087] font-bold uppercase";
+                } else {
+                    connStatus.innerText = "FAILED/TIMEOUT";
+                    connStatus.className = "text-[#f6465d] font-bold uppercase";
+                }
+
+                // UI update សម្រាប់ Positions / History / Journal ...
                 const posBody = document.getElementById('posTableBody');
                 if (data.positions && data.positions.length > 0) {
                     posBody.innerHTML = data.positions.map(pos => {
@@ -249,7 +320,6 @@
                     posBody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">គ្មានលំដាប់ជួញដូរកំពុងដំណើរការឡើយ</td></tr>`;
                 }
 
-                // History UI render
                 const hisBody = document.getElementById('hisTableBody');
                 if (data.history && data.history.length > 0) {
                     hisBody.innerHTML = data.history.map(his => {
@@ -270,17 +340,13 @@
                     hisBody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">គ្មានប្រវត្តិប្រតិបត្តិការឡើយ</td></tr>`;
                 }
 
-                // Journal logs render
                 const journalArea = document.getElementById('journalLogArea');
                 if (data.journal && data.journal.length > 0) {
                     journalArea.innerHTML = data.journal.map(log => `<div>${log}</div>`).join('');
                 }
 
-                // Connection Lights
-                const diff = data.serverTime - data.lastPing;
                 const light = document.getElementById('apiLight');
                 const text = document.getElementById('apiText');
-                
                 if (data.lastPing === 0) {
                     light.className = "w-2 h-2 rounded-full bg-yellow-500 animate-pulse";
                     text.innerText = "VPS BRIDGE: CONNECTING...";
@@ -295,13 +361,7 @@
                     text.className = "text-[#f6465d] font-semibold";
                 }
             })
-            .catch(() => {
-                const light = document.getElementById('apiLight');
-                const text = document.getElementById('apiText');
-                light.className = "w-2 h-2 rounded-full bg-[#f6465d] shadow-lg shadow-[#f6465d]/50 animate-pulse";
-                text.innerText = "VPS BRIDGE: FAILED";
-                text.className = "text-[#f6465d] font-semibold";
-            });
+            .catch(() => {});
         }, 2000);
     </script>
 </body>
