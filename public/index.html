@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bybit Style Cloud Dashboard</title>
+    <title>Bybit Style Cloud Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     <style> 
@@ -20,43 +20,57 @@
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-2">
                 <span class="text-[#ffb11a] text-xl font-bold tracking-wider">BYBIT</span>
-                <span class="text-slate-400 text-xs border-l border-slate-700 pl-2">CLOUD TERMINAL</span>
+                <span class="text-slate-400 text-xs border-l border-slate-700 pl-2 font-mono">CLOUD TERMINAL</span>
             </div>
-            <!-- ភ្លើងសញ្ញាតភ្ជាប់ VPS ស្អាតសាមញ្ញ -->
             <div class="flex items-center gap-1.5 bg-[#1e2329] px-3 py-1.5 rounded border border-[#2d3139] text-xs font-mono">
                 <span id="apiLight" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                <span id="apiText" class="text-yellow-500 font-semibold">VPS BRIDGE: CONNECTING...</span>
+                <span id="apiText" class="text-yellow-500 font-semibold text-[11px]">VPS BRIDGE: CONNECTING...</span>
             </div>
         </div>
     </header>
 
     <!-- Main Workspace -->
-    <main class="flex-grow max-w-5xl mx-auto w-full p-4 lg:p-6 space-y-4">
+    <main class="flex-grow max-w-6xl mx-auto w-full p-4 lg:p-6 space-y-4">
         
+        <!-- Header Account Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-[#12161a] border border-[#2d3139] p-4 rounded shadow">
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">Account Balance</p>
+                <h3 id="balVal" class="text-2xl font-bold text-slate-100 mt-1 font-mono">$0.00</h3>
+            </div>
+            <div class="bg-[#12161a] border border-[#2d3139] p-4 rounded shadow">
+                <p class="text-[10px] text-[#03c087] uppercase tracking-wider">Account Equity</p>
+                <h3 id="eqVal" class="text-2xl font-bold text-[#03c087] mt-1 font-mono">$0.00</h3>
+            </div>
+            <div class="bg-[#12161a] border border-[#2d3139] p-4 rounded shadow flex flex-col justify-center">
+                <p class="text-[10px] text-slate-400 uppercase tracking-wider">EA Status</p>
+                <div class="flex justify-between items-center mt-1">
+                    <span id="eaTextStatus" class="text-xs font-bold text-[#03c087]">RUNNING</span>
+                    <button id="eaToggle" onclick="toggleEA()" class="bg-[#03c087]/10 text-[#03c087] border border-[#03c087]/20 px-2.5 py-1 rounded text-[10px] font-bold">ACTIVE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             
-            <!-- ប្លុកកំណត់ parameters ជួញដូរ -->
-            <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded-lg space-y-4 shadow-lg text-xs">
-                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">⚙️ TRADING PARAMETERS</h2>
+            <!-- Left Side: Config Panel -->
+            <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded space-y-4 shadow-lg text-xs self-start">
+                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">⚙️ Config Parameters</h2>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-slate-400 mb-1">Lot Size</label>
-                        <input type="number" id="lotSize" value="0.01" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none">
+                        <input type="number" id="lotSize" value="0.01" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none font-mono">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">កាត់ចំណេញ TP ($)</label>
-                        <input type="number" id="tp_usd" value="0.65" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#03c087] font-bold focus:outline-none">
+                        <label class="block text-slate-400 mb-1">Target TP ($)</label>
+                        <input type="number" id="tp_usd" value="0.65" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#03c087] font-bold focus:outline-none font-mono">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">កាត់ខាត SL ($)</label>
-                        <input type="number" id="sl_usd" value="5.00" step="0.1" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#f6465d] font-bold focus:outline-none">
+                        <label class="block text-slate-400 mb-1">Max Loss SL ($)</label>
+                        <input type="number" id="sl_usd" value="5.00" step="0.1" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#f6465d] font-bold focus:outline-none font-mono">
                     </div>
-                </div>
-
-                <div class="flex justify-between items-center pt-2">
-                    <span class="text-slate-400">ស្ថានភាព EA៖</span>
-                    <button id="eaToggle" onclick="toggleEA()" class="bg-[#03c087]/10 text-[#03c087] border border-[#03c087]/20 px-3 py-1 rounded text-[10px] font-bold uppercase">ACTIVE</button>
                 </div>
 
                 <button id="regBtn" onclick="syncToMT5()" class="w-full bg-[#ffb11a] hover:bg-[#e09600] text-black font-bold py-2.5 rounded text-xs uppercase tracking-wider transition-all transform active:scale-[0.98]">
@@ -64,24 +78,72 @@
                 </button>
             </div>
 
-            <!-- ប្លុកសមតុល្យលុយពិត និងលំដាប់ត្រេដ (Account Overview) -->
-            <div class="md:col-span-2 bg-[#12161a] border border-[#2d3139] p-5 rounded-lg flex flex-col justify-between shadow-lg">
-                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">📈 ACCOUNT OVERVIEW (REAL-TIME)</h2>
+            <!-- Right Side: Navigation & Monitoring Tables -->
+            <div class="lg:col-span-2 bg-[#12161a] border border-[#2d3139] rounded shadow-lg flex flex-col overflow-hidden min-h-[400px]">
                 
-                <div class="grid grid-cols-2 gap-4 my-4">
-                    <div class="bg-[#1e2329] p-5 rounded border border-[#2d3139]">
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Account Balance</p>
-                        <h3 id="balVal" class="text-2xl sm:text-3xl font-bold text-slate-100 mt-2 font-mono">$0.00</h3>
-                    </div>
-                    <div class="bg-[#1e2329] p-5 rounded border border-[#2d3139]">
-                        <p class="text-[10px] text-[#03c087] uppercase tracking-wider">Account Equity</p>
-                        <h3 id="eqVal" class="text-2xl sm:text-3xl font-bold text-[#03c087] mt-2 font-mono">$0.00</h3>
-                    </div>
+                <!-- Tab Controls -->
+                <div class="flex border-b border-[#2d3139] bg-[#1a1f26]">
+                    <button id="tabPosBtn" onclick="switchTab('positions')" class="flex-1 py-3 text-xs font-bold text-[#ffb11a] border-b-2 border-[#ffb11a] hover:bg-[#202630] transition-all">
+                        🟢 Active Positions
+                    </button>
+                    <button id="tabHisBtn" onclick="switchTab('history')" class="flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 hover:bg-[#202630] transition-all">
+                        📜 History
+                    </button>
+                    <button id="tabJnlBtn" onclick="switchTab('journal')" class="flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 hover:bg-[#202630] transition-all">
+                        ⚙️ Journal
+                    </button>
                 </div>
-                
-                <div class="space-y-2">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">Active Trades & Logs</p>
-                    <div id="positionsVal" class="p-3 bg-[#1e2329] text-xs text-emerald-400 rounded border border-[#2d3139] font-mono leading-relaxed h-28 overflow-y-auto">គ្មានការជួញដូរសកម្មឡើយ</div>
+
+                <!-- Tab Content Sections -->
+                <div class="p-4 flex-grow text-xs">
+                    
+                    <!-- 1. Positions Tab -->
+                    <div id="tabPositions" class="block overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-slate-500 border-b border-[#2d3139] uppercase text-[10px]">
+                                    <th class="pb-2">Ticket</th>
+                                    <th class="pb-2">Type</th>
+                                    <th class="pb-2">Size</th>
+                                    <th class="pb-2">Price</th>
+                                    <th class="pb-2 text-right">Profit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="posTableBody" class="font-mono text-slate-300">
+                                <tr>
+                                    <td colspan="5" class="py-4 text-center text-slate-500">គ្មានលំដាប់ជួញដូរកំពុងដំណើរការឡើយ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 2. History Tab -->
+                    <div id="tabHistory" class="hidden overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-slate-500 border-b border-[#2d3139] uppercase text-[10px]">
+                                    <th class="pb-2">Ticket</th>
+                                    <th class="pb-2">Type</th>
+                                    <th class="pb-2">Size</th>
+                                    <th class="pb-2">Profit</th>
+                                    <th class="pb-2 text-right">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hisTableBody" class="font-mono text-slate-300">
+                                <tr>
+                                    <td colspan="5" class="py-4 text-center text-slate-500">គ្មានប្រវត្តិប្រតិបត្តិការឡើយ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 3. Journal Tab -->
+                    <div id="tabJournal" class="hidden">
+                        <div id="journalLogArea" class="bg-[#0b0e11] p-3 rounded border border-[#2d3139] font-mono text-slate-400 text-[11px] h-64 overflow-y-auto space-y-1">
+                            <div>[INFO] កំពុងរង់ចាំសញ្ញាភ្ជាប់ពី VPS...</div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -95,23 +157,50 @@
 
     <script>
         let eaActive = 1;
+        let activeTab = 'positions';
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            const tabs = ['positions', 'history', 'journal'];
+            tabs.forEach(t => {
+                const element = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+                const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1, 3) + 'Btn');
+                
+                if (t === tabName) {
+                    element.classList.remove('hidden');
+                    element.classList.add('block');
+                    btn.classList.add('text-[#ffb11a]', 'border-b-2', 'border-[#ffb11a]');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    element.classList.add('hidden');
+                    element.classList.remove('block');
+                    btn.classList.remove('text-[#ffb11a]', 'border-b-2', 'border-[#ffb11a]');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+        }
 
         function toggleEA() {
             const btn = document.getElementById('eaToggle');
+            const lbl = document.getElementById('eaTextStatus');
             if (eaActive === 1) { 
                 eaActive = 0; 
                 btn.innerText = "DISABLED"; 
-                btn.className = "bg-[#f6465d]/10 text-[#f6465d] border border-[#f6465d]/20 px-3 py-1 rounded text-[10px] font-bold uppercase"; 
+                btn.className = "bg-[#f6465d]/10 text-[#f6465d] border border-[#f6465d]/20 px-2.5 py-1 rounded text-[10px] font-bold"; 
+                lbl.innerText = "STOPPED";
+                lbl.className = "text-xs font-bold text-[#f6465d]";
             } else { 
                 eaActive = 1; 
                 btn.innerText = "ACTIVE"; 
-                btn.className = "bg-[#03c087]/10 text-[#03c087] border border-[#03c087]/20 px-3 py-1 rounded text-[10px] font-bold uppercase"; 
+                btn.className = "bg-[#03c087]/10 text-[#03c087] border border-[#03c087]/20 px-2.5 py-1 rounded text-[10px] font-bold"; 
+                lbl.innerText = "RUNNING";
+                lbl.className = "text-xs font-bold text-[#03c087]";
             }
         }
 
         function syncToMT5() {
             const regBtn = document.getElementById('regBtn');
-            regBtn.innerText = "SAVING SETTINGS TO CLOUD...";
+            regBtn.innerText = "SAVING SETTINGS...";
             regBtn.disabled = true;
 
             const lot = document.getElementById('lotSize').value;
@@ -124,22 +213,70 @@
                 body: JSON.stringify({ lot, tp, sl, active: eaActive })
             })
             .then(res => res.text())
-            .then(data => {
+            .then(() => {
                 regBtn.innerText = "💾 SAVE SETTINGS";
                 regBtn.disabled = false;
-                alert("រក្សាទុកការកំណត់ជោគជ័យ!");
             });
         }
 
-        // រត់ត្រួតពិនិត្យភ្លើងសញ្ញាតភ្ជាប់ និងទឹកប្រាក់រៀងរាល់ ២ វិនាទីម្តង
+        // Loop update គ្រប់ទិន្នន័យរៀងរាល់ ២ វិនាទី
         setInterval(() => {
             fetch('/api/status')
             .then(res => res.json())
             .then(data => {
+                // Update Balance/Equity
                 document.getElementById('balVal').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
                 document.getElementById('eqVal').innerText = `$${parseFloat(data.equity).toFixed(2)}`;
-                document.getElementById('positionsVal').innerHTML = `<div class="text-[#03c087]">[TRADES]: ${data.positions}</div><div class="text-slate-400 mt-1.5">[EA LOGS]: ${data.log}</div>`;
                 
+                // Active Positions UI render
+                const posBody = document.getElementById('posTableBody');
+                if (data.positions && data.positions.length > 0) {
+                    posBody.innerHTML = data.positions.map(pos => {
+                        const typeText = pos.type === 0 ? 'BUY' : 'SELL';
+                        const typeClass = pos.type === 0 ? 'text-[#03c087]' : 'text-[#f6465d]';
+                        const profitClass = parseFloat(pos.profit) >= 0 ? 'text-[#03c087]' : 'text-[#f6465d]';
+                        return `
+                            <tr class="border-b border-[#2d3139]/50 hover:bg-[#1a1f26]">
+                                <td class="py-2">${pos.ticket}</td>
+                                <td class="py-2 ${typeClass} font-bold">${typeText}</td>
+                                <td class="py-2">${parseFloat(pos.volume).toFixed(2)}</td>
+                                <td class="py-2">$${parseFloat(pos.price).toFixed(2)}</td>
+                                <td class="py-2 text-right ${profitClass}">$${parseFloat(pos.profit).toFixed(2)}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    posBody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">គ្មានលំដាប់ជួញដូរកំពុងដំណើរការឡើយ</td></tr>`;
+                }
+
+                // History UI render
+                const hisBody = document.getElementById('hisTableBody');
+                if (data.history && data.history.length > 0) {
+                    hisBody.innerHTML = data.history.map(his => {
+                        const typeText = his.type === 0 ? 'BUY' : 'SELL';
+                        const typeClass = his.type === 0 ? 'text-[#03c087]' : 'text-[#f6465d]';
+                        const profitClass = parseFloat(his.profit) >= 0 ? 'text-[#03c087]' : 'text-[#f6465d]';
+                        return `
+                            <tr class="border-b border-[#2d3139]/50 hover:bg-[#1a1f26]">
+                                <td class="py-2">${his.ticket}</td>
+                                <td class="py-2 ${typeClass}">${typeText}</td>
+                                <td class="py-2">${parseFloat(his.volume).toFixed(2)}</td>
+                                <td class="py-2 ${profitClass}">$${parseFloat(his.profit).toFixed(2)}</td>
+                                <td class="py-2 text-right text-slate-500">${his.time}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    hisBody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">គ្មានប្រវត្តិប្រតិបត្តិការឡើយ</td></tr>`;
+                }
+
+                // Journal logs render
+                const journalArea = document.getElementById('journalLogArea');
+                if (data.journal && data.journal.length > 0) {
+                    journalArea.innerHTML = data.journal.map(log => `<div>${log}</div>`).join('');
+                }
+
+                // Connection Lights
                 const diff = data.serverTime - data.lastPing;
                 const light = document.getElementById('apiLight');
                 const text = document.getElementById('apiText');
@@ -148,7 +285,7 @@
                     light.className = "w-2 h-2 rounded-full bg-yellow-500 animate-pulse";
                     text.innerText = "VPS BRIDGE: CONNECTING...";
                     text.className = "text-yellow-500 font-semibold";
-                } else if (diff < 6000) { // បើក្រោម ៦ វិនាទី មានន័យថា MT5 កំពុងភ្ជាប់សកម្ម
+                } else if (diff < 6000) { 
                     light.className = "w-2 h-2 rounded-full bg-[#03c087] shadow-lg shadow-[#03c087]/50";
                     text.innerText = "VPS BRIDGE: ACTIVE";
                     text.className = "text-[#03c087] font-semibold";
@@ -158,7 +295,7 @@
                     text.className = "text-[#f6465d] font-semibold";
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 const light = document.getElementById('apiLight');
                 const text = document.getElementById('apiText');
                 light.className = "w-2 h-2 rounded-full bg-[#f6465d] shadow-lg shadow-[#f6465d]/50 animate-pulse";
