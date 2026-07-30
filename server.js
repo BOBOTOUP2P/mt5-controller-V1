@@ -8,13 +8,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// តភ្ជាប់ទៅកាន់ Database MongoDB (ប្រើប្រាស់តែ ១ គត់ជារៀងរហូត)
+let dbConnected = false;
+
+// ១. តភ្ជាប់ទៅកាន់ MongoDB Database
 const MONGO_URI = "mongodb+srv://nna617014_db_user:HcihqVABHE4BLqSL@cluster0.iwa7tts.mongodb.net/?appName=Cluster0";
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log("Connected to MongoDB Atlas"))
-.catch(err => console.error("Database connection failed", err));
+.then(() => {
+    console.log("Connected to MongoDB Atlas");
+    dbConnected = true;
+})
+.catch(err => {
+    dbConnected = false;
+});
 
-// រចនាសម្ព័ន្ធផ្ទុកទិន្នន័យសមាជិកក្នុង Database
+// ២. រចនាសម្ព័ន្ធផ្ទុកទិន្នន័យ (លុបចោល Password ទាំងស្រុង)
 const UserSchema = new mongoose.Schema({
     accId: { type: String, unique: true },
     server: String,
@@ -34,9 +41,9 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// API សម្រាប់ទទួលបញ្ជាពីវិបសាយ Bybit (Lot, TP, SL)
+// ៣. API សម្រាប់ទទួលបញ្ជាពីវិបសាយ (លុបចោល Password)
 app.post('/save', async (req, res) => {
-    const { accId, server, lot, tp, sl, active, spread } = req.body;
+    const { accId, server, lot, tp, sl, active } = req.body;
     try {
         await User.findOneAndUpdate(
             { accId: accId },
@@ -49,7 +56,7 @@ app.post('/save', async (req, res) => {
     }
 });
 
-// API សម្រាប់ទទួលទិន្នន័យពី MT5 លើ VPS រួចផ្ញើការកំណត់ជួញដូរត្រឡប់ទៅវិញភ្លាមៗ
+// ៤. API សម្រាប់ទទួលទិន្នន័យពី MT5 លើ VPS រួចផ្ញើការកំណត់ជួញដូរត្រឡប់ទៅវិញភ្លាមៗ
 app.post('/update', async (req, res) => {
     const { accId, balance, equity, positions, log } = req.body;
     try {
@@ -59,7 +66,6 @@ app.post('/update', async (req, res) => {
             { new: true }
         );
         if (updatedUser) {
-            // ផ្ញើការកំណត់ជួញដូរចុងក្រោយត្រឡប់ទៅឱ្យ MT5 វិញជាអក្សរក្បៀស (CSV)
             const csvSettings = `${updatedUser.accId},${updatedUser.server},${updatedUser.lotSize},${updatedUser.tp_usd},${updatedUser.sl_usd},${updatedUser.active ? 1 : 0},500`;
             res.send(csvSettings);
         } else {
@@ -70,7 +76,7 @@ app.post('/update', async (req, res) => {
     }
 });
 
-// API សម្រាប់ទាញយកស្ថានភាពគណនី Exness ជាក់ស្តែងទៅបង្ហាញលើវិបសាយ Bybit
+// ៥. API សម្រាប់ទាញយកស្ថានភាពគណនី Exness ទៅបង្ហាញលើវិបសាយ Bybit
 app.get('/api/status-account/:accId', async (req, res) => {
     try {
         const user = await User.findOne({ accId: req.params.accId });
@@ -92,11 +98,11 @@ app.get('/api/status-account/:accId', async (req, res) => {
     }
 });
 
-// API សម្រាប់ទាញយកស្ថានភាពស្ពានតភ្ជាប់ទូទៅ (លែងប្រើ MetaApi នាំតែស្មុគស្មាញ)
+// ៦. API សម្រាប់ទាញយកស្ថានភាពស្ពានតភ្ជាប់ទូទៅ (លែងប្រើ MetaApi នាំតែស្មុគស្មាញ)
 app.get('/api/status-general', (req, res) => {
     res.json({
-        db: mongoose.connection.readyState === 1,
-        api: true // ស្ពាន API ដើរជោគជ័យជានិច្ច
+        db: dbConnected,
+        api: true 
     });
 });
 
