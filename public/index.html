@@ -31,9 +31,9 @@
     </header>
 
     <!-- Main Workspace -->
-    <main class="flex-grow max-w-4xl mx-auto w-full p-4 lg:p-6 space-y-4">
+    <main class="flex-grow max-w-5xl mx-auto w-full p-4 lg:p-6 space-y-4">
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             
             <!-- ប្លុកកំណត់ parameters ជួញដូរ -->
             <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded-lg space-y-4 shadow-lg text-xs">
@@ -79,8 +79,9 @@
                     </div>
                 </div>
                 
-                <div class="text-[10px] text-slate-500 font-mono pt-4 border-t border-[#2d3139] mt-4">
-                    ចំណាំ៖ រាល់ទិន្នន័យសមតុល្យលុយ Balance និង Equity នឹងធ្វើបច្ចុប្បន្នភាពរៀងរាល់ ២ វិនាទីដោយស្វ័យប្រវត្តិចេញពី MT5។
+                <div class="space-y-2">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">Active Trades & Logs</p>
+                    <div id="positionsVal" class="p-3 bg-[#1e2329] text-xs text-emerald-400 rounded border border-[#2d3139] font-mono leading-relaxed h-28 overflow-y-auto">គ្មានការជួញដូរសកម្មឡើយ</div>
                 </div>
             </div>
 
@@ -120,7 +121,7 @@
             fetch('/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ lot, tp, sl, active: eaActive })
+                body: JSON.stringify({ accId: "414063265", server: "Exness-MT5Trial6", lot, tp, sl, active: eaActive })
             })
             .then(res => res.text())
             .then(data => {
@@ -137,6 +138,7 @@
             .then(data => {
                 document.getElementById('balVal').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
                 document.getElementById('eqVal').innerText = `$${parseFloat(data.equity).toFixed(2)}`;
+                document.getElementById('positionsVal').innerHTML = `<div>[TRADES]: ${data.positions}</div><div class="text-slate-400 mt-1">[LOGS]: ${data.log}</div>`;
                 
                 const diff = data.serverTime - data.lastPing;
                 const light = document.getElementById('apiLight');
