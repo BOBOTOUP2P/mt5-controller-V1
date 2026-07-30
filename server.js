@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// រក្សាទុកទិន្នន័យពី MT5 ក្នុងមេម៉ូរីបណ្តោះអាសន្ន (In-Memory)
+// រក្សាទុកទិន្នន័យពី MT5 ក្នុងមេម៉ូរីបណ្តោះអាសន្ន
 let mt5Status = {
     balance: "0.00",
     equity: "0.00",
@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ១. API សម្រាប់ទទួលការកំណត់ជួញដូរពីវិបសាយ Bybit (Lot, TP, SL)
+// API សម្រាប់ទទួលការកំណត់ជួញដូរពីវិបសាយ Bybit
 app.post('/save', (req, res) => {
     const { lot, tp, sl, active } = req.body;
     const csvData = `${lot},${tp},${sl},${active}`;
@@ -30,16 +30,16 @@ app.post('/save', (req, res) => {
     res.send("Saved");
 });
 
-// ២. API សម្រាប់ឱ្យ MT5 លើ VPS មកទាញយកការកំណត់ (និងបញ្ជូនលុយ, Trades, Logs មកបង្ហាញក្នុងពេលតែមួយ)
+// API សម្រាប់ឱ្យ MT5 លើ VPS មកទាញយកការកំណត់ (និងបញ្ជូនលុយ លំដាប់ត្រេដ និង Logs មកបង្ហាញជាមួយគ្នា)
 app.get('/get-settings', (req, res) => {
-    const { balance, equity, pos, log } = req.query;
+    const { balance, equity, positions, log } = req.query;
     
     if(balance && equity) {
         mt5Status = {
             balance: balance,
             equity: equity,
-            positions: pos ? decodeURIComponent(pos).replace(/_/g, ' ') : "គ្មានការជួញដូរសកម្មឡើយ",
-            log: log ? decodeURIComponent(log).replace(/_/g, ' ') : "EA ដំណើរការធម្មតា",
+            positions: positions || "គ្មានការជួញដូរសកម្មឡើយ",
+            log: log || "EA ដំណើរការធម្មតា",
             lastPing: Date.now()
         };
     }
@@ -52,13 +52,13 @@ app.get('/get-settings', (req, res) => {
     }
 });
 
-// ៣. API សម្រាប់ឱ្យវិបសាយ Bybit ទាញយកស្ថានភាពជាក់ស្តែងទៅបង្ហាញ
+// API សម្រាប់ឱ្យវិបសាយ Bybit ទាញយកទិន្នន័យរួមទៅបង្ហាញ
 app.get('/api/status', (req, res) => {
     res.json({
         ...mt5Status,
         serverTime: Date.now(),
-        db: true,  // ACTIVE ជានិច្ច
-        api: true  // ACTIVE ជានិច្ច
+        db: true,  
+        api: true  
     });
 });
 
