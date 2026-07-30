@@ -64,11 +64,11 @@
                 </button>
             </div>
 
-            <!-- ប្លុកសមតុល្យលុយពិត (Account Overview) -->
+            <!-- ប្លុកសមតុល្យលុយពិត និងលំដាប់ត្រេដ (Account Overview) -->
             <div class="md:col-span-2 bg-[#12161a] border border-[#2d3139] p-5 rounded-lg flex flex-col justify-between shadow-lg">
                 <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">📈 ACCOUNT OVERVIEW (REAL-TIME)</h2>
                 
-                <div class="grid grid-cols-2 gap-4 my-auto">
+                <div class="grid grid-cols-2 gap-4 my-4">
                     <div class="bg-[#1e2329] p-5 rounded border border-[#2d3139]">
                         <p class="text-[10px] text-slate-400 uppercase tracking-wider">Account Balance</p>
                         <h3 id="balVal" class="text-2xl sm:text-3xl font-bold text-slate-100 mt-2 font-mono">$0.00</h3>
@@ -121,7 +121,7 @@
             fetch('/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accId: "414063265", server: "Exness-MT5Trial6", lot, tp, sl, active: eaActive })
+                body: JSON.stringify({ lot, tp, sl, active: eaActive })
             })
             .then(res => res.text())
             .then(data => {
@@ -138,7 +138,7 @@
             .then(data => {
                 document.getElementById('balVal').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
                 document.getElementById('eqVal').innerText = `$${parseFloat(data.equity).toFixed(2)}`;
-                document.getElementById('positionsVal').innerHTML = `<div>[TRADES]: ${data.positions}</div><div class="text-slate-400 mt-1">[LOGS]: ${data.log}</div>`;
+                document.getElementById('positionsVal').innerHTML = `<div class="text-[#03c087]">[TRADES]: ${data.positions}</div><div class="text-slate-400 mt-1.5">[EA LOGS]: ${data.log}</div>`;
                 
                 const diff = data.serverTime - data.lastPing;
                 const light = document.getElementById('apiLight');
@@ -148,7 +148,7 @@
                     light.className = "w-2 h-2 rounded-full bg-yellow-500 animate-pulse";
                     text.innerText = "VPS BRIDGE: CONNECTING...";
                     text.className = "text-yellow-500 font-semibold";
-                } else if (diff < 6000) { 
+                } else if (diff < 6000) { // បើក្រោម ៦ វិនាទី មានន័យថា MT5 កំពុងភ្ជាប់សកម្ម
                     light.className = "w-2 h-2 rounded-full bg-[#03c087] shadow-lg shadow-[#03c087]/50";
                     text.innerText = "VPS BRIDGE: ACTIVE";
                     text.className = "text-[#03c087] font-semibold";
