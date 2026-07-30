@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,102 +7,41 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-let dbConnected = false;
-
-// ១. តភ្ជាប់ទៅកាន់ MongoDB Database
-const MONGO_URI = "mongodb+srv://nna617014_db_user:HcihqVABHE4BLqSL@cluster0.iwa7tts.mongodb.net/?appName=Cluster0";
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => {
-    console.log("Connected to MongoDB Atlas");
-    dbConnected = true;
-})
-.catch(err => {
-    dbConnected = false;
-});
-
-// ២. រចនាសម្ព័ន្ធផ្ទុកទិន្នន័យ (លុបចោលប្រព័ន្ធ Password ជារៀងរហូត)
-const UserSchema = new mongoose.Schema({
-    accId: { type: String, unique: true },
-    server: String,
-    lotSize: Number,
-    sl_usd: Number,
-    tp_usd: Number,
-    active: Boolean,
-    balance: { type: String, default: "0.00" },
-    equity: { type: String, default: "0.00" },
-    positions: { type: String, default: "គ្មានការជួញដូរសកម្មឡើយ" },
-    log: { type: String, default: "EA ដំណើរការធម្មតា" },
-    lastPing: { type: Number, default: 0 }
-});
-const User = mongoose.model('User', UserSchema);
+let lastPingTime = 0; // រក្សាទុកពេលវេលាតភ្ជាប់ចុងក្រោយរបស់ MT5
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ៣. API សម្រាប់ទទួលបញ្ជាការកំណត់ Lot, TP, SL ពីវិបសាយ Bybit
-app.post('/save', async (req, res) => {
+// ១. API សម្រាប់ទទួលបញ្ជាការកំណត់ពីវិបសាយ Bybit
+app.post('/save', (req, res) => {
     const { accId, server, lot, tp, sl, active } = req.body;
+    const csvData = `${accId},${server},${lot},${tp},${sl},${active}`;
+    
+    fs.writeFileSync(__dirname + '/settings.txt', csvData);
+    console.log("បានរក្សាទុកការកំណត់ថ្មី៖ " + csvData);
+    res.send("Saved");
+});
+
+// ២. API សម្រាប់ឱ្យ MT5 លើ VPS មកទាញយកការកំណត់ (និងឆ្កឹះ Ping ឱ្យវិបសាយដឹងក្នុងពេលតែមួយ)
+app.get('/get-settings', (req, res) => {
+    lastPingTime = Date.now(); // កត់ត្រាពេលវេលាដែល MT5 មកឆ្កឹះ
+    
     try {
-        await User.findOneAndUpdate(
-            { accId: accId },
-            { accId, server, lotSize: lot, tp_usd: tp, sl_usd: sl, active: active === 1 },
-            { upsert: true, new: true }
-        );
-        res.send("Saved");
+        const data = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
+        res.send(data);
     } catch (err) {
-        res.status(500).send("Error");
+        // បើគ្មានឯកសារកំណត់ទេ ផ្ញើការកំណត់លំនាំដើមនេះទៅមុន
+        res.send("414063265,Exness-MT5Trial6,0.01,0.65,5.00,1");
     }
 });
 
-// ៤. API សម្រាប់ទទួលទិន្នន័យ (លុយពិត, លំដាប់ត្រេដ, Log) ពី MT5 លើ VPS រួចផ្ញើការកំណត់ត្រឡប់ទៅវិញ
-app.post('/update', async (req, res) => {
-    const { accId, balance, equity, positions, log } = req.body;
-    try {
-        const updatedUser = await User.findOneAndUpdate(
-            { accId: accId },
-            { balance, equity, positions, log, lastPing: Date.now() },
-            { new: true }
-        );
-        if (updatedUser) {
-            // ផ្ញើការកំណត់ត្រឡប់ទៅឱ្យ MT5 វិញជាអក្សរក្បៀស (CSV)
-            const csvSettings = `${updatedUser.accId},${updatedUser.server},${updatedUser.lotSize},${updatedUser.tp_usd},${updatedUser.sl_usd},${updatedUser.active ? 1 : 0},500`;
-            res.send(csvSettings);
-        } else {
-            res.send("NOT_FOUND");
-        }
-    } catch (err) {
-        res.send("ERROR");
-    }
-});
-
-// ៥. API សម្រាប់ទាញយកស្ថានភាពគណនី Exness ទៅបង្ហាញលើវិបសាយ Bybit (ទាញចេញពី Database)
-app.get('/api/status-account/:accId', async (req, res) => {
-    try {
-        const user = await User.findOne({ accId: req.params.accId });
-        if (user) {
-            res.json({
-                success: true,
-                balance: user.balance,
-                equity: user.equity,
-                positions: user.positions,
-                log: user.log,
-                lastPing: user.lastPing,
-                serverTime: Date.now()
-            });
-        } else {
-            res.json({ success: false });
-        }
-    } catch (err) {
-        res.json({ success: false });
-    }
-});
-
-// ៦. API សម្រាប់ស្ថានភាព DB
-app.get('/api/status-general', (req, res) => {
+// ៣. API សម្រាប់ឱ្យវិបសាយទាញយកស្ថានភាពស្ពានតភ្ជាប់
+app.get('/api/status', (req, res) => {
     res.json({
-        db: dbConnected
+        lastPing: lastPingTime,
+        serverTime: Date.now()
     });
 });
 
-app.listen(PORT, () => console.log(`Server is running`));
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
