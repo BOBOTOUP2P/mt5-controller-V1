@@ -11,6 +11,8 @@ app.use(express.static('public'));
 let mt5Status = {
     balance: "0.00",
     equity: "0.00",
+    positions: "គ្មានការជួញដូរសកម្មឡើយ",
+    log: "EA ដំណើរការធម្មតា",
     lastPing: 0
 };
 
@@ -30,12 +32,14 @@ app.post('/save', (req, res) => {
 
 // ២. API សម្រាប់ទទួលទិន្នន័យលុយពិតពី MT5 (POST JSON) និងផ្ញើការកំណត់ទៅត្រេដវិញភ្លាមៗ
 app.post('/update', (req, res) => {
-    const { balance, equity } = req.body;
+    const { balance, equity, positions, log } = req.body;
     
     // បច្ចុប្បន្នភាពសមតុល្យលុយក្នុងមេម៉ូរី RAM
     mt5Status = {
         balance: balance || "0.00",
         equity: equity || "0.00",
+        positions: positions || "គ្មានការជួញដូរសកម្មឡើយ",
+        log: log || "EA ដំណើរការធម្មតា",
         lastPing: Date.now()
     };
 
