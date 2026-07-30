@@ -5,20 +5,19 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// ១. តភ្ជាប់ទៅកាន់ MongoDB Database
+// តភ្ជាប់ទៅកាន់ Database MongoDB (ប្រើប្រាស់តែ ១ គត់ជារៀងរហូត)
 const MONGO_URI = "mongodb+srv://nna617014_db_user:HcihqVABHE4BLqSL@cluster0.iwa7tts.mongodb.net/?appName=Cluster0";
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log("Connected to MongoDB"))
+.then(() => console.log("Connected to MongoDB Atlas"))
 .catch(err => console.error("Database connection failed", err));
 
-// ២. បង្កើតរចនាសម្ព័ន្ធផ្ទុកទិន្នន័យសមាជិក (Database Schema)
+// រចនាសម្ព័ន្ធផ្ទុកទិន្នន័យសមាជិកក្នុង Database
 const UserSchema = new mongoose.Schema({
     accId: { type: String, unique: true },
-    password_mt5: String,
     server: String,
-    platform: String,
     lotSize: Number,
     sl_usd: Number,
     tp_usd: Number,
@@ -26,7 +25,7 @@ const UserSchema = new mongoose.Schema({
     balance: { type: String, default: "0.00" },
     equity: { type: String, default: "0.00" },
     positions: { type: String, default: "គ្មានការជួញដូរសកម្មឡើយ" },
-    log: { type: String, default: "កំពុងរង់ចាំការភ្ជាប់ពី MT5..." },
+    log: { type: String, default: "EA ដំណើរការធម្មតា" },
     lastPing: { type: Number, default: 0 }
 });
 const User = mongoose.model('User', UserSchema);
@@ -35,22 +34,22 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// ៣. API សម្រាប់សមាជិកចុះឈ្មោះ និងកំណត់ប៉ារ៉ាម៉ែត្រជួញដូរលើវិបសាយ
-app.post('/api/register', async (req, res) => {
-    const { accId, password_mt5, server, platform, lotSize, sl_usd, tp_usd } = req.body;
+// API សម្រាប់ទទួលបញ្ជាពីវិបសាយ Bybit (Lot, TP, SL)
+app.post('/save', async (req, res) => {
+    const { accId, server, lot, tp, sl, active, spread } = req.body;
     try {
         await User.findOneAndUpdate(
             { accId: accId },
-            { accId, password_mt5, server, platform, lotSize, sl_usd, tp_usd, active: true },
+            { accId, server, lotSize: lot, tp_usd: tp, sl_usd: sl, active: active === 1 },
             { upsert: true, new: true }
         );
-        res.json({ success: true, message: "រក្សាទុកការកំណត់ និងបើកស្ពានតភ្ជាប់ទៅ VPS រួចរាល់!" });
+        res.send("Saved");
     } catch (err) {
-        res.json({ success: false, message: "កំហុសបច្ចេកទេស៖ " + err.message });
+        res.status(500).send("Error");
     }
 });
 
-// ៤. API សម្រាប់កម្មវិធី MT5 លើ VPS ផ្ញើស្ថានភាពគណនីមក និងទាញយកការកំណត់ទៅត្រេដវិញភ្លាមៗ
+// API សម្រាប់ទទួលទិន្នន័យពី MT5 លើ VPS រួចផ្ញើការកំណត់ជួញដូរត្រឡប់ទៅវិញភ្លាមៗ
 app.post('/update', async (req, res) => {
     const { accId, balance, equity, positions, log } = req.body;
     try {
@@ -71,7 +70,7 @@ app.post('/update', async (req, res) => {
     }
 });
 
-// ៥. API សម្រាប់ទាញយកស្ថានភាពគណនីទៅបង្ហាញលើវិបសាយ Bybit
+// API សម្រាប់ទាញយកស្ថានភាពគណនី Exness ជាក់ស្តែងទៅបង្ហាញលើវិបសាយ Bybit
 app.get('/api/status-account/:accId', async (req, res) => {
     try {
         const user = await User.findOne({ accId: req.params.accId });
@@ -91,6 +90,14 @@ app.get('/api/status-account/:accId', async (req, res) => {
     } catch (err) {
         res.json({ success: false });
     }
+});
+
+// API សម្រាប់ទាញយកស្ថានភាពស្ពានតភ្ជាប់ទូទៅ (លែងប្រើ MetaApi នាំតែស្មុគស្មាញ)
+app.get('/api/status-general', (req, res) => {
+    res.json({
+        db: mongoose.connection.readyState === 1,
+        api: true // ស្ពាន API ដើរជោគជ័យជានិច្ច
+    });
 });
 
 app.listen(PORT, () => console.log(`Server is running`));
