@@ -22,90 +22,52 @@
                 <span class="text-[#ffb11a] text-xl font-bold tracking-wider">BYBIT</span>
                 <span class="text-slate-400 text-xs border-l border-slate-700 pl-2">CLOUD TERMINAL</span>
             </div>
-            <!-- ភ្លើងសញ្ញាតភ្ជាប់ទាំង ២ -->
-            <div class="flex flex-wrap gap-4 text-[11px] text-slate-400 font-mono">
-                <div class="flex items-center gap-1.5 bg-[#1e2329] px-2.5 py-1 rounded border border-[#2d3139]">
-                    <span id="dbLight" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                    <span id="dbText">DB: CONNECTING...</span>
-                </div>
-                <div class="flex items-center gap-1.5 bg-[#1e2329] px-2.5 py-1 rounded border border-[#2d3139]">
-                    <span id="apiLight" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                    <span id="apiText">VPS BRIDGE: CONNECTING...</span>
-                </div>
+            <!-- ភ្លើងសញ្ញាតភ្ជាប់ VPS ស្អាតសាមញ្ញ -->
+            <div class="flex items-center gap-1.5 bg-[#1e2329] px-3 py-1.5 rounded border border-[#2d3139] text-xs font-mono">
+                <span id="apiLight" class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                <span id="apiText" class="text-yellow-500 font-semibold">VPS BRIDGE: CONNECTING...</span>
             </div>
         </div>
     </header>
 
     <!-- Main Workspace -->
-    <main class="flex-grow max-w-5xl mx-auto w-full p-4 lg:p-6 space-y-4">
+    <main class="flex-grow max-w-lg mx-auto w-full p-4 lg:p-6 space-y-4">
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- ប្លុកកំណត់ parameters ជួញដូរ -->
+        <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded-lg space-y-4 shadow-lg text-xs">
+            <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">⚙️ TRADING PARAMETERS</h2>
             
-            <!-- ប្លុកកំណត់ Exness (Left Column - លុបចោលប្រអប់ Password រហូត) -->
-            <div class="bg-[#12161a] border border-[#2d3139] p-5 rounded-lg space-y-4 shadow-lg text-xs">
-                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">🔑 EXNESS CONFIGURATION</h2>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-slate-400 mb-1">លេខគណនី Exness MT5 ID</label>
-                        <input type="text" id="accId" value="414063265" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-2 text-[#ffb11a] focus:outline-none focus:border-[#ffb11a]">
-                    </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">ម៉ាស៊ីនបម្រើ (Server)</label>
-                        <input type="text" id="server" value="Exness-MT5Trial6" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-2 text-slate-300 focus:outline-none">
-                    </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-slate-400 mb-1">Lot Size</label>
+                    <input type="number" id="lotSize" value="0.01" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none">
                 </div>
-                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pt-2 pb-2">⚙️ TRADING PARAMETERS</h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-400 mb-1">Lot Size</label>
-                        <input type="number" id="lotSize" value="0.01" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">Spread Points</label>
-                        <input type="number" id="spread" value="500" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-slate-300 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">កាត់ចំណេញ TP ($)</label>
-                        <input type="number" id="tp_usd" value="0.65" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#03c087] font-bold focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1">កាត់ខាត SL ($)</label>
-                        <input type="number" id="sl_usd" value="5.00" step="0.1" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#f6465d] font-bold focus:outline-none">
-                    </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">កាត់ចំណេញ TP ($)</label>
+                    <input type="number" id="tp_usd" value="0.65" step="0.01" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#03c087] font-bold focus:outline-none">
                 </div>
-                <div class="pt-2 flex justify-between items-center">
-                    <span class="text-slate-400">ស្ថានភាព EA៖</span>
-                    <button id="eaToggle" onclick="toggleEA()" class="bg-[#03c087]/10 text-[#03c087] border border-[#03c087]/20 px-3 py-1 rounded text-[10px] font-bold uppercase">ACTIVE</button>
-                </div>
-                <button id="regBtn" onclick="registerAccount()" class="w-full bg-[#ffb11a] hover:bg-[#e09600] text-black font-bold py-2.5 rounded text-xs uppercase tracking-wider transition-all">💾 SAVE SETTINGS</button>
-            </div>
-
-            <!-- ប្លុកសមតុល្យលុយពិត និងលំដាប់ជួញដូរពី VPS (Right Column) -->
-            <div class="lg:col-span-2 bg-[#12161a] border border-[#2d3139] p-5 rounded-lg flex flex-col justify-between shadow-lg">
-                <h2 class="text-xs font-bold text-[#ffb11a] uppercase tracking-wider border-b border-[#2d3139] pb-2">📈 ACCOUNT OVERVIEW (REAL-TIME)</h2>
-                
-                <div class="grid grid-cols-2 gap-4 my-6">
-                    <div class="bg-[#1e2329] p-5 rounded border border-[#2d3139]">
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Account Balance</p>
-                        <h3 id="balVal" class="text-2xl sm:text-3xl font-bold text-slate-100 mt-2 font-mono">$0.00</h3>
-                    </div>
-                    <div class="bg-[#1e2329] p-5 rounded border border-[#2d3139]">
-                        <p class="text-[10px] text-[#03c087] uppercase tracking-wider">Account Equity</p>
-                        <h3 id="eqVal" class="text-2xl sm:text-3xl font-bold text-[#03c087] mt-2 font-mono">$0.00</h3>
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-wider">Active Trades & Logs</p>
-                    <div id="positionsVal" class="p-3 bg-[#1e2329] text-xs text-emerald-400 rounded border border-[#2d3139] font-mono leading-relaxed h-28 overflow-y-auto">គ្មានការជួញដូរសកម្មឡើយ</div>
+                <div class="col-span-2">
+                    <label class="block text-slate-400 mb-1">កាត់ខាត SL ($)</label>
+                    <input type="number" id="sl_usd" value="5.00" step="0.1" class="w-full bg-[#1e2329] border border-[#2d3139] rounded px-3 py-1.5 text-[#f6465d] font-bold focus:outline-none">
                 </div>
             </div>
 
+            <div class="flex justify-between items-center pt-2">
+                <span class="text-slate-400">ស្ថានភាព EA៖</span>
+                <button id="eaToggle" onclick="toggleEA()" class="bg-[#03c087]/10 text-[#03c087] border border-[#03c087]/20 px-3 py-1 rounded text-[10px] font-bold uppercase">ACTIVE</button>
+            </div>
+
+            <button id="regBtn" onclick="syncToMT5()" class="w-full bg-[#ffb11a] hover:bg-[#e09600] text-black font-bold py-2.5 rounded text-xs uppercase tracking-wider transition-all transform active:scale-[0.98]">
+                💾 SAVE SETTINGS
+            </button>
         </div>
 
     </main>
 
-    <footer class="border-t border-[#2d3139] py-3 text-center text-[10px] text-slate-500 bg-[#12161a]">© 2026 BYBIT STYLE CLOUD TERMINAL.</footer>
+    <footer class="border-t border-[#2d3139] py-3 text-center text-[10px] text-slate-500 bg-[#12161a]">
+        © 2026 BYBIT STYLE CLOUD TERMINAL.
+    </footer>
+
     <script>
         let eaActive = 1;
 
@@ -122,38 +84,11 @@
             }
         }
 
-        function updateStatusLight(elementId, textId, name, isConnected) {
-            const light = document.getElementById(elementId);
-            const text = document.getElementById(textId);
-            if(isConnected) {
-                light.className = "w-2 h-2 rounded-full bg-[#03c087] shadow-lg shadow-[#03c087]/50";
-                text.innerText = `${name}: ACTIVE`;
-                text.className = "text-[#03c087] font-semibold";
-            } else {
-                light.className = "w-2 h-2 rounded-full bg-[#f6465d] shadow-lg shadow-[#f6465d]/50 animate-pulse";
-                text.innerText = `${name}: FAILED`;
-                text.className = "text-[#f6465d] font-semibold";
-            }
-        }
-
-        function fetchGeneralStatus() {
-            fetch('/api/status-general')
-            .then(res => res.json())
-            .then(data => {
-                updateStatusLight('dbLight', 'dbText', 'DB', data.db);
-            });
-        }
-        
-        fetchGeneralStatus();
-        setInterval(fetchGeneralStatus, 5000);
-
-        function registerAccount() {
+        function syncToMT5() {
             const regBtn = document.getElementById('regBtn');
             regBtn.innerText = "SAVING SETTINGS TO CLOUD...";
             regBtn.disabled = true;
 
-            const accId = document.getElementById('accId').value;
-            const server = document.getElementById('server').value;
             const lot = document.getElementById('lotSize').value;
             const tp = document.getElementById('tp_usd').value;
             const sl = document.getElementById('sl_usd').value;
@@ -161,7 +96,7 @@
             fetch('/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ accId, server, lot, tp, sl, active: eaActive })
+                body: JSON.stringify({ accId: "414063265", server: "Exness-MT5Trial6", lot, tp, sl, active: eaActive })
             })
             .then(res => res.text())
             .then(data => {
@@ -171,32 +106,35 @@
             });
         }
 
-        // រត់ត្រួតពិនិត្យ និងទាញយកទិន្នន័យសមតុល្យលុយពិតពី MT5 រៀងរាល់ ២ វិនាទីម្តង
+        // រត់ត្រួតពិនិត្យភ្លើងសញ្ញាតភ្ជាប់រៀងរាល់ ២ វិនាទីម្តង
         setInterval(() => {
-            const accId = document.getElementById('accId').value;
-            if(!accId) return;
-            fetch(`/api/status-account/${accId}`)
+            fetch('/api/status')
             .then(res => res.json())
             .then(data => {
-                if(data.success) {
-                    document.getElementById('balVal').innerText = `$${parseFloat(data.balance).toFixed(2)}`;
-                    document.getElementById('eqVal').innerText = `$${parseFloat(data.equity).toFixed(2)}`;
-                    document.getElementById('positionsVal').innerHTML = `<div>[TRADES]: ${data.positions}</div><div class="text-slate-400 mt-1">[LOGS]: ${data.log}</div>`;
-                    
-                    const diff = data.serverTime - data.lastPing;
-                    const light = document.getElementById('apiLight');
-                    const text = document.getElementById('apiText');
-                    
-                    if (diff < 6000) {
-                        light.className = "w-2 h-2 rounded-full bg-[#03c087] shadow-lg shadow-[#03c087]/50";
-                        text.innerText = "VPS BRIDGE: ACTIVE";
-                        text.className = "text-[#03c087] font-semibold";
-                    } else {
-                        light.className = "w-2 h-2 rounded-full bg-[#f6465d] shadow-lg shadow-[#f6465d]/50 animate-pulse";
-                        text.innerText = "VPS BRIDGE: FAILED";
-                        text.className = "text-[#f6465d] font-semibold";
-                    }
+                const diff = data.serverTime - data.lastPing;
+                const light = document.getElementById('apiLight');
+                const text = document.getElementById('apiText');
+                
+                if (data.lastPing === 0) {
+                    light.className = "w-2 h-2 rounded-full bg-yellow-500 animate-pulse";
+                    text.innerText = "VPS BRIDGE: CONNECTING...";
+                    text.className = "text-yellow-500 font-semibold";
+                } else if (diff < 6000) { // បើក្រោម ៦ វិនាទី មានន័យថា MT5 កំពុងភ្ជាប់សកម្ម
+                    light.className = "w-2 h-2 rounded-full bg-[#03c087] shadow-lg shadow-[#03c087]/50";
+                    text.innerText = "VPS BRIDGE: ACTIVE";
+                    text.className = "text-[#03c087] font-semibold";
+                } else {
+                    light.className = "w-2 h-2 rounded-full bg-[#f6465d] shadow-lg shadow-[#f6465d]/50 animate-pulse";
+                    text.innerText = "VPS BRIDGE: FAILED";
+                    text.className = "text-[#f6465d] font-semibold";
                 }
+            })
+            .catch(err => {
+                const light = document.getElementById('apiLight');
+                const text = document.getElementById('apiText');
+                light.className = "w-2 h-2 rounded-full bg-[#f6465d] shadow-lg shadow-[#f6465d]/50 animate-pulse";
+                text.innerText = "VPS BRIDGE: FAILED";
+                text.className = "text-[#f6465d] font-semibold";
             });
         }, 2000);
     </script>
