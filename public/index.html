@@ -25,7 +25,6 @@
       overflow-x: hidden;
     }
 
-    /* Screen Overlay Simulation for Trading Background behind popup */
     .app-background {
       position: fixed;
       top: 0;
@@ -37,7 +36,6 @@
       z-index: 1;
     }
 
-    /* Bottom Sheet Modal Container */
     .bottom-sheet {
       position: relative;
       z-index: 2;
@@ -51,7 +49,6 @@
       border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* Header centered */
     .header {
       display: flex;
       justify-content: center;
@@ -68,7 +65,6 @@
       text-align: center;
     }
 
-    /* Action Grid (Top 4 Icons) */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -118,7 +114,6 @@
       right: 12px;
     }
 
-    /* Section Headers */
     .section-title {
       font-size: 13.5px;
       color: #6a7180;
@@ -126,7 +121,6 @@
       font-weight: 500;
     }
 
-    /* Checkbox Options Grid */
     .options-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -144,7 +138,6 @@
       user-select: none;
     }
 
-    /* Custom Square Checkbox Style matching original screenshot */
     .checkbox-label input[type="checkbox"] {
       appearance: none;
       -webkit-appearance: none;
@@ -203,7 +196,6 @@
       margin-left: 2px;
     }
 
-    /* Slider Section with Start, Middle, End Stops */
     .slider-section {
       margin-bottom: 30px;
     }
@@ -225,7 +217,6 @@
       border-radius: 1px;
     }
 
-    /* Tick dots at Start, Center, and End */
     .slider-dot {
       position: absolute;
       width: 10px;
@@ -241,7 +232,6 @@
     .slider-dot.middle { left: 50%; }
     .slider-dot.end { right: 0%; transform: translate(0, -50%); }
 
-    /* Interactive Slider Input */
     .range-slider {
       position: absolute;
       width: 100%;
@@ -251,7 +241,6 @@
       z-index: 3;
     }
 
-    /* Custom Handle Thumb Overlay */
     .custom-thumb {
       position: absolute;
       top: 50%;
@@ -276,7 +265,6 @@
       z-index: 1;
     }
 
-    /* List Rows */
     .list-row {
       display: flex;
       justify-content: space-between;
@@ -300,14 +288,14 @@
     }
 
     /* ==========================================================================
-       VIEW CONTAINERS (Default view states)
+       VIEW CONTAINERS
        ========================================================================== */
     .view-container {
       display: none;
     }
 
     #view-balance {
-      display: block; /* Show Balance Page on load */
+      display: block;
     }
 
     /* ==========================================================================
@@ -355,7 +343,6 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* Deposit & Withdrawal Buttons */
     .balance-actions-group {
       display: flex;
       gap: 8px;
@@ -376,7 +363,7 @@
     }
 
     .btn-deposit {
-      background-color: #00b4d8; /* Ocean Blue */
+      background-color: #00b4d8;
       color: #ffffff;
     }
 
@@ -386,7 +373,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* SL & TP Row */
     .sl-tp-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -414,9 +400,8 @@
     }
 
     .sl-color { color: #f6465d; }
-    .tp-color { color: #00b4d8; } /* Ocean Blue */
+    .tp-color { color: #00b4d8; }
 
-    /* MT5 Connection Section */
     .connect-section {
       margin-bottom: 24px;
       display: flex;
@@ -525,7 +510,6 @@
 
     .copy-field-btn:hover { color: #ffffff; }
 
-    /* Wide Navigation Button */
     .nav-btn-wide {
       width: 100%;
       background-color: transparent;
@@ -546,7 +530,6 @@
     .nav-btn-wide:hover { background-color: rgba(255, 255, 255, 0.03); }
     .nav-btn-wide:active { background-color: rgba(255, 255, 255, 0.08); transform: scale(0.98); }
 
-    /* Disabled submit button state */
     .nav-btn-wide.disabled, .btn-blue-run.disabled, .btn-dark-save.disabled {
       background-color: #1e2026 !important;
       color: #5e6673 !important;
@@ -624,7 +607,8 @@
       border: none;
     }
 
-    .ea-icon-border-btn::before {
+    /* រង្វង់រុំជុំវិញវិលតែពេល EA កំពុង Active ប៉ុណ្ណោះ */
+    .ea-icon-border-btn.spinning::before {
       content: '';
       position: absolute;
       top: -50%;
@@ -688,9 +672,6 @@
     .btn-blue-run { background-color: #00b4d8; color: #ffffff; }
     .btn-blue-run:active { background-color: #0093b2; transform: scale(0.98); }
 
-    /* ==========================================================================
-       TABS / SECTION BOX STYLES
-       ========================================================================== */
     .tabs-container {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -762,13 +743,12 @@
     .empty-state-text { text-align: center; color: #5e6673; font-size: 12.5px; padding: 20px 0; }
 
     /* ==========================================================================
-       DATE VIEW STYLES (Performance Line Chart & Custom Calendar)
+       DATE VIEW STYLES
        ========================================================================== */
     #view-date {
       display: none;
     }
 
-    /* Beautiful SVG Line Chart Box */
     .line-chart-box {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -785,7 +765,6 @@
       height: 100%;
     }
 
-    /* Glowing indicator pulse animation */
     @keyframes pulse-glow {
       0% { r: 4px; opacity: 0.3; }
       50% { r: 9px; opacity: 0.9; }
@@ -796,7 +775,6 @@
       animation: pulse-glow 2s infinite ease-in-out;
     }
 
-    /* Calendar Grid */
     .calendar-box {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -815,7 +793,6 @@
       color: #ffffff;
     }
 
-    /* Clickable Month Navigation Buttons */
     .cal-nav-btn {
       background: none;
       border: none;
@@ -846,7 +823,7 @@
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       text-align: center;
-      gap: 6px;
+      gap: 12px 6px;
     }
 
     .day-num {
@@ -870,28 +847,31 @@
       font-weight: 600;
     }
 
-    /* 2 Dot indicators setup: Red & Ocean Blue */
     .day-num .dot {
       width: 4px;
       height: 4px;
       border-radius: 50%;
       margin-top: 3px;
-      display: none; /* hidden by default */
+      display: none;
     }
 
     .day-num.red-total .dot {
       display: block;
-      background-color: #f6465d; /* Red */
+      background-color: #f6465d;
     }
 
     .day-num.blue-total .dot {
       display: block;
-      background-color: #00b4d8; /* Ocean Blue */
+      background-color: #00b4d8;
     }
 
-    /* ==========================================================================
-       DEPOSIT & WITHDRAWAL FULL VIEW PAGE STYLES
-       ========================================================================== */
+    /* សម្រួលអក្សរបញ្ជាក់ទឹកប្រាក់ប្រចាំថ្ងៃពីក្រោមចំណុចតូច */
+    .day-num .day-profit-label {
+      font-size: 8px;
+      margin-top: 2px;
+      font-weight: bold;
+    }
+
     #view-deposit, #view-withdraw {
       display: none;
     }
@@ -906,7 +886,6 @@
       background-color: rgba(255, 255, 255, 0.01);
     }
 
-    /* Quick select amount buttons (2x4 Grid) */
     .quick-amounts-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -927,7 +906,7 @@
     }
 
     .quick-amt-btn.active {
-      border-color: #00b4d8; /* Ocean Blue outline */
+      border-color: #00b4d8;
       background-color: rgba(0, 180, 216, 0.05);
     }
   </style>
@@ -938,14 +917,12 @@
 
   <div class="bottom-sheet">
     
-    <!-- 1. BALANCE DETAILS VIEW (First page shown) -->
+    <!-- 1. BALANCE DETAILS VIEW -->
     <div id="view-balance" class="view-container">
-      <!-- Centered Header -->
       <div class="header">
         <h2>Balance</h2>
       </div>
 
-      <!-- Account Balance & Account Equity -->
       <div class="balance-boxes">
         <div class="balance-card balance-card-flex">
           <div class="balance-text-group">
@@ -964,22 +941,18 @@
         </div>
       </div>
 
-      <!-- Total SL & Total TP on the same horizontal row -->
       <div class="sl-tp-row">
-        <!-- Box 1: Total (SL) -->
         <div class="sl-tp-card">
           <div class="sl-tp-title">Total (SL)</div>
           <div class="sl-tp-value sl-color" id="sl-display-value">- $0.00</div>
         </div>
 
-        <!-- Box 2: Total (TP) -->
         <div class="sl-tp-card">
           <div class="sl-tp-title">Total (TP)</div>
           <div class="sl-tp-value tp-color" id="tp-display-value">+ $0.00</div>
         </div>
       </div>
 
-      <!-- MT5 Connection Form -->
       <div class="connect-section">
         <div class="connect-header">
           <div class="connect-title-container">
@@ -994,9 +967,7 @@
           </div>
         </div>
 
-        <!-- Three Display Boxes with Labels -->
         <div class="read-only-group">
-          <!-- MT5 Server -->
           <div class="ea-form-group">
             <span class="ea-input-label">MT5 Server</span>
             <div class="read-only-box">
@@ -1007,7 +978,6 @@
             </div>
           </div>
 
-          <!-- MT5 Account ID -->
           <div class="ea-form-group">
             <span class="ea-input-label">MT5 Account ID</span>
             <div class="read-only-box">
@@ -1018,7 +988,6 @@
             </div>
           </div>
 
-          <!-- MT5 Password -->
           <div class="ea-form-group">
             <span class="ea-input-label">MT5 Password</span>
             <div class="read-only-box">
@@ -1031,7 +1000,6 @@
         </div>
       </div>
 
-      <!-- Navigation to Chart Settings Page -->
       <button class="nav-btn-wide" id="btn-goto-chart-settings">
         Chart Settings <i data-lucide="arrow-right" size="16"></i>
       </button>
@@ -1040,29 +1008,23 @@
 
     <!-- 2. MAIN CHART SETTINGS VIEW -->
     <div id="view-main" class="view-container">
-      <!-- Centered Header -->
       <div class="header">
         <h2>Chart Settings</h2>
       </div>
 
-      <!-- 4 Action Icons -->
       <div class="action-grid">
-        <!-- 1. EA Trading -->
         <div class="action-item" id="btn-ea-trading">
           <div class="icon-box"><i data-lucide="bot" size="22"></i></div>
           <span>EA Trading</span>
         </div>
-        <!-- 2. Balance -->
         <div class="action-item" id="btn-balance">
           <div class="icon-box"><i data-lucide="wallet" size="22"></i></div>
           <span>Balance</span>
         </div>
-        <!-- 3. Date -->
         <div class="action-item" id="btn-date">
           <div class="icon-box"><i data-lucide="calendar" size="22"></i></div>
           <span>Date</span>
         </div>
-        <!-- 4. Others -->
         <div class="action-item">
           <div class="icon-box">
             <i data-lucide="settings" size="22"></i>
@@ -1072,7 +1034,6 @@
         </div>
       </div>
 
-      <!-- Chart Display Section -->
       <div class="section-title">Chart Display</div>
       <div class="options-grid">
         <label class="checkbox-label">
@@ -1101,7 +1062,6 @@
         </label>
       </div>
 
-      <!-- Order Display Section -->
       <div class="section-title">Order Display</div>
       <div class="options-grid">
         <label class="checkbox-label">
@@ -1131,27 +1091,22 @@
         </label>
       </div>
 
-      <!-- Chart Height Slider Section -->
       <div class="section-title" style="margin-top: 6px;">Chart Height</div>
       <div class="slider-section">
         <div class="slider-container">
           <div class="slider-track-bg"></div>
           <div class="active-track" id="activeTrack"></div>
           
-          <!-- Dots at Start, Middle, End -->
           <div class="slider-dot start"></div>
           <div class="slider-dot middle"></div>
           <div class="slider-dot end"></div>
 
-          <!-- Custom Thumb Indicator -->
           <div class="custom-thumb" id="customThumb"></div>
 
-          <!-- Hidden Native Range Input -->
           <input type="range" class="range-slider" id="heightSlider" min="0" max="100" value="38">
         </div>
       </div>
 
-      <!-- List Rows -->
       <div class="list-row">
         <div class="list-row-label">Time Zone</div>
         <div class="list-row-value">
@@ -1170,19 +1125,15 @@
 
     <!-- 3. EA TRADING VIEW -->
     <div id="view-ea-trading" class="view-container">
-      <!-- Centered Header -->
       <div class="header">
         <h2>EA Trading</h2>
       </div>
 
-      <!-- Section Title -->
       <div class="section-title" style="text-align: center; margin-bottom: 20px; color: #848e9c;">
         TRADING PARAMETERS
       </div>
 
-      <!-- Parameter 2-Column Grid -->
       <div class="ea-form-grid">
-        <!-- Row 1: Lot Size & Limit (TP)/24h -->
         <div class="ea-form-group">
           <span class="ea-input-label">Lot Size</span>
           <input type="text" class="form-input ea-field" id="ea-lot-size" value="0.01">
@@ -1192,7 +1143,6 @@
           <input type="text" class="form-input ea-field" id="limit-input" value="$0.50">
         </div>
 
-        <!-- Row 2: Target TP ($) & Low Lot Size -->
         <div class="ea-form-group">
           <span class="ea-input-label">Target TP ($)</span>
           <input type="text" class="form-input tp-input-color ea-field" id="ea-target-tp" value="0.65">
@@ -1202,42 +1152,35 @@
           <input type="text" class="form-input ea-field" id="ea-low-lot" value="0.30">
         </div>
 
-        <!-- Row 3: Max Loss SL ($) & EA Autopilot info -->
         <div class="ea-form-group">
           <span class="ea-input-label">Max Loss SL ($)</span>
           <input type="text" class="form-input sl-input-color ea-field" id="ea-max-loss" value="5.00">
         </div>
         <div class="ea-form-group ea-auto-align">
-          <div class="ea-icon-border-btn">
+          <div class="ea-icon-border-btn spinning" id="ea-icon-border-btn">
             <i data-lucide="cpu" size="18"></i>
           </div>
           <div class="auto-trading-badge" id="ea-trading-status-badge">Trading Auto</div>
         </div>
       </div>
 
-      <!-- Row 4: Save & Run Buttons -->
       <div class="buttons-row">
         <button class="ea-half-btn btn-dark-save disabled" id="btn-save-ea">Save</button>
         <button class="ea-half-btn btn-blue-run" id="btn-run-ea">Run</button>
       </div>
 
-      <!-- Large Clickable Tabs Container -->
       <div class="tabs-container">
-        <!-- Tab Headers -->
         <div class="tabs-header">
           <button class="tab-btn active" data-tab="journal">Journal</button>
           <button class="tab-btn" data-tab="history">History</button>
           <button class="tab-btn" data-tab="active-pos">Active Positions</button>
         </div>
         
-        <!-- Tab Contents -->
         <div class="tabs-content">
-          <!-- 1. Journal Panel -->
           <div class="tab-panel active" id="panel-journal">
             <div class="journal-log" id="journal-log-area">[INFO] កំពុងរង់ចាំសញ្ញាភ្ជាប់ពី VPS...</div>
           </div>
           
-          <!-- 2. History Panel -->
           <div class="tab-panel" id="panel-history">
             <div class="table-header-row">
               <span>TICKET</span>
@@ -1251,7 +1194,6 @@
             </div>
           </div>
           
-          <!-- 3. Active Positions Panel -->
           <div class="tab-panel" id="panel-active-pos">
             <div class="table-header-row">
               <span>TICKET</span>
@@ -1267,7 +1209,6 @@
         </div>
       </div>
 
-      <!-- Back button to return to Chart Settings -->
       <button class="nav-btn-wide" id="btn-ea-back">
         <i data-lucide="arrow-left" size="16"></i> Chart Settings
       </button>
@@ -1276,24 +1217,19 @@
 
     <!-- 4. DATE & HISTORICAL CHARTS VIEW -->
     <div id="view-date" class="view-container">
-      <!-- Centered Header -->
       <div class="header">
         <h2>Date Reports</h2>
       </div>
 
-      <!-- SVG Flat Line Chart Box (White straight line representing no total yet) -->
       <div class="section-title">Performance Trend</div>
       <div class="line-chart-box">
         <svg class="performance-line-svg" viewBox="0 0 350 120" width="100%" height="100%">
-          <!-- Subtle Grid Lines -->
           <line x1="0" y1="20" x2="350" y2="20" stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="4" />
           <line x1="0" y1="60" x2="350" y2="60" stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="4" />
           <line x1="0" y1="100" x2="350" y2="100" stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="4" />
 
-          <!-- Flat Straight Line (White) as there's no data yet -->
           <path d="M 10 60 L 310 60" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" />
 
-          <!-- Glowing breathing pointer at the end of the flat line -->
           <g>
             <circle cx="310" cy="60" r="7" fill="rgba(255, 255, 255, 0.45)" class="pulse-circle" />
             <circle cx="310" cy="60" r="3" fill="#ffffff" />
@@ -1301,30 +1237,27 @@
         </svg>
       </div>
 
-      <!-- Total SL & Total TP Summary Cards -->
+      <!-- កែប្រែឈ្មោះប្រអប់ទាំងពីរជា 24/h -->
       <div class="sl-tp-row">
         <div class="sl-tp-card">
-          <div class="sl-tp-title">Total SL</div>
+          <div class="sl-tp-title">Total SL 24/h</div>
           <div class="sl-tp-value sl-color" id="date-sl-value">-$0.00</div>
         </div>
         <div class="sl-tp-card">
-          <div class="sl-tp-title">Total TP</div>
+          <div class="sl-tp-title">Total TP 24/h</div>
           <div class="sl-tp-value tp-color" id="date-tp-value">+$0.00</div>
         </div>
       </div>
 
-      <!-- Calendar dynamically built via JS -->
       <div class="section-title">Daily Calendar Activity</div>
       <div class="calendar-box">
         <div class="calendar-month-header">
-          <!-- Back Chevron -->
           <button class="cal-nav-btn" id="btn-prev-month">
             <i data-lucide="chevron-left" size="18"></i>
           </button>
           
-          <span id="calendar-month-title"><!-- Populated dynamically --></span>
+          <span id="calendar-month-title"></span>
           
-          <!-- Forward Chevron -->
           <button class="cal-nav-btn" id="btn-next-month">
             <i data-lucide="chevron-right" size="18"></i>
           </button>
@@ -1333,11 +1266,9 @@
           <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
         </div>
         <div class="calendar-days" id="calendar-days-grid">
-          <!-- Rendered dynamically -->
         </div>
       </div>
 
-      <!-- Navigation back to main Chart Settings page -->
       <button class="nav-btn-wide" id="btn-date-back">
         <i data-lucide="arrow-left" size="16"></i> Chart Settings
       </button>
@@ -1346,40 +1277,33 @@
 
     <!-- 5. DEPOSIT FULL PAGE VIEW -->
     <div id="view-deposit" class="view-container">
-      <!-- Centered Header -->
       <div class="header">
         <h2>Deposit Fund</h2>
       </div>
 
-      <!-- Deposit Instructions Image Banner -->
       <img src="https://i.ibb.co/RJzMQkf/IMG-2980.jpg" alt="Deposit Banner" class="deposit-banner">
 
       <div class="read-only-group" style="margin-bottom: 24px;">
-        <!-- Amount Input -->
         <div class="ea-form-group">
           <span class="ea-input-label">Amount (ចំនួនទឹកប្រាក់)</span>
           <input type="number" class="form-input" id="deposit-amount" placeholder="Enter amount ($)" required>
         </div>
 
-        <!-- UID BOBOTOU.io Input -->
         <div class="ea-form-group">
           <span class="ea-input-label">UID BOBOTOU.io</span>
           <input type="text" class="form-input" id="deposit-uid" placeholder="Enter UID" required>
         </div>
 
-        <!-- Account BOBOTOU Name Input -->
         <div class="ea-form-group">
           <span class="ea-input-label">Account BOBOTOU:</span>
           <input type="text" class="form-input" id="deposit-account" placeholder="វាយបញ្ចូលឈ្មោះអាខោន" required>
         </div>
       </div>
 
-      <!-- Submit "បង់ប្រាក់" Button (Initially Disabled) -->
       <button class="nav-btn-wide btn-blue-run disabled" id="btn-submit-deposit" style="margin-bottom: 12px;">
         បង់ប្រាក់
       </button>
 
-      <!-- Navigation back to Balance page -->
       <button class="nav-btn-wide" id="btn-deposit-back">
         <i data-lucide="arrow-left" size="16"></i> Back to Balance
       </button>
@@ -1388,12 +1312,10 @@
 
     <!-- 6. WITHDRAWAL FULL PAGE VIEW -->
     <div id="view-withdraw" class="view-container">
-      <!-- Centered Header -->
       <div class="header">
         <h2>Withdrawal Fund</h2>
       </div>
 
-      <!-- 8 Quick Amount Buttons in 2x4 Grid format -->
       <div class="section-title">Select Amount</div>
       <div class="quick-amounts-grid">
         <button class="quick-amt-btn" data-val="1">$1</button>
@@ -1407,31 +1329,26 @@
       </div>
 
       <div class="read-only-group" style="margin-bottom: 24px;">
-        <!-- Amount Input -->
         <div class="ea-form-group">
           <span class="ea-input-label">Amount (ចំនួនទឹកប្រាក់)</span>
           <input type="number" class="form-input" id="withdraw-amount" placeholder="Enter amount ($)" required>
         </div>
 
-        <!-- UID BOBOTOU.io Input -->
         <div class="ea-form-group">
           <span class="ea-input-label">UID BOBOTOU.io</span>
           <input type="text" class="form-input" id="withdraw-uid" placeholder="Enter UID" required>
         </div>
 
-        <!-- Account BOBOTOU Name Input -->
         <div class="ea-form-group">
           <span class="ea-input-label">Account BOBOTOU:</span>
           <input type="text" class="form-input" id="withdraw-account" placeholder="វាយបញ្ចូលឈ្មោះអាខោន" required>
         </div>
       </div>
 
-      <!-- Submit "ដកប្រាក់" Button -->
       <button class="nav-btn-wide btn-blue-run disabled" id="btn-submit-withdraw" style="margin-bottom: 12px;">
         ដកប្រាក់
       </button>
 
-      <!-- Navigation back to Balance page -->
       <button class="nav-btn-wide" id="btn-withdraw-back">
         <i data-lucide="arrow-left" size="16"></i> Back to Balance
       </button>
@@ -1440,10 +1357,8 @@
   </div>
 
   <script>
-    // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Slider Interactivity JS
     const slider = document.getElementById('heightSlider');
     const thumb = document.getElementById('customThumb');
     const activeTrack = document.getElementById('activeTrack');
@@ -1457,7 +1372,6 @@
     slider.addEventListener('input', updateSlider);
     updateSlider();
 
-    // Elements & Views
     const viewBalance = document.getElementById('view-balance');
     const viewMain = document.getElementById('view-main');
     const viewEaTrading = document.getElementById('view-ea-trading');
@@ -1465,7 +1379,6 @@
     const viewDeposit = document.getElementById('view-deposit');
     const viewWithdraw = document.getElementById('view-withdraw');
 
-    // Navigation Buttons
     const btnGotoChartSettings = document.getElementById('btn-goto-chart-settings');
     const btnBalance = document.getElementById('btn-balance');
     const btnEaTrading = document.getElementById('btn-ea-trading');
@@ -1473,107 +1386,90 @@
     const btnDate = document.getElementById('btn-date');
     const btnDateBack = document.getElementById('btn-date-back');
     
-    // Deposit / Withdrawal Navigations
     const btnDeposit = document.querySelector('.btn-deposit');
     const btnDepositBack = document.getElementById('btn-deposit-back');
     const btnWithdraw = document.querySelector('.btn-withdraw');
     const btnWithdrawBack = document.getElementById('btn-withdraw-back');
 
-    // Save and Run Action Buttons
     const btnSaveEa = document.getElementById('btn-save-ea');
     const btnRunEa = document.getElementById('btn-run-ea');
 
-    // Input Elements (Deposit)
     const btnSubmitDeposit = document.getElementById('btn-submit-deposit');
     const depositAmount = document.getElementById('deposit-amount');
     const depositUid = document.getElementById('deposit-uid');
     const depositAccount = document.getElementById('deposit-account');
 
-    // Input Elements (Withdrawal)
     const btnSubmitWithdraw = document.getElementById('btn-submit-withdraw');
     const withdrawAmount = document.getElementById('withdraw-amount');
     const withdrawUid = document.getElementById('withdraw-uid');
     const withdrawAccount = document.getElementById('withdraw-account');
     const quickAmtBtns = document.querySelectorAll('.quick-amt-btn');
 
-    // EA Fields (For dynamic Lot Size / Parameters validation)
     const eaFields = document.querySelectorAll('.ea-field');
 
-    // Global Mock Balance Value
     let accountBalanceLimit = 0.00;
-    let eaActive = 1; // 1 = Run, 0 = Stopped
+    let eaActive = 1; 
 
-    // Calendar navigation state variables
     let navDate = new Date();
     let displayYear = navDate.getFullYear();
     let displayMonth = navDate.getMonth();
 
-    // 1. Balance Page Navigation (Goto Chart Settings)
+    // បម្រុងទុកទិន្នន័យប្រតិទិនប្រចាំថ្ងៃដើម្បី Render UI ស្វ័យប្រវត្ត
+    let globalDailyPerformance = {};
+
     btnGotoChartSettings.addEventListener('click', () => {
       viewBalance.style.display = 'none';
       viewMain.style.display = 'block';
     });
 
-    // 2. Chart Settings Navigation (Goto Balance)
     btnBalance.addEventListener('click', () => {
       viewMain.style.display = 'none';
       viewBalance.style.display = 'block';
     });
 
-    // 3. Chart Settings Navigation (Goto EA Trading)
     btnEaTrading.addEventListener('click', () => {
       viewMain.style.display = 'none';
       viewEaTrading.style.display = 'block';
     });
 
-    // 4. EA Trading Navigation (Back to Chart Settings)
     btnEaBack.addEventListener('click', () => {
       viewEaTrading.style.display = 'none';
       viewMain.style.display = 'block';
     });
 
-    // 5. Chart Settings Navigation (Goto Date Reports + Render Calendar)
     btnDate.addEventListener('click', () => {
       viewMain.style.display = 'none';
       viewDate.style.display = 'block';
       renderCalendar(); 
     });
 
-    // 6. Date Page Navigation (Back to Chart Settings)
     btnDateBack.addEventListener('click', () => {
       viewDate.style.display = 'none';
       viewMain.style.display = 'block';
     });
 
-    // 7. Balance Page -> Deposit Page Navigation
     btnDeposit.addEventListener('click', () => {
       viewBalance.style.display = 'none';
       viewDeposit.style.display = 'block';
       validateDepositForm();
     });
 
-    // 8. Deposit Page -> Back to Balance Page Navigation
     btnDepositBack.addEventListener('click', () => {
       viewDeposit.style.display = 'none';
       viewBalance.style.display = 'block';
     });
 
-    // 9. Balance Page -> Withdrawal Page Navigation
     btnWithdraw.addEventListener('click', () => {
       viewBalance.style.display = 'none';
       viewWithdraw.style.display = 'block';
       validateWithdrawForm();
     });
 
-    // 10. Withdrawal Page -> Back to Balance Page Navigation
     btnWithdrawBack.addEventListener('click', () => {
       viewWithdraw.style.display = 'none';
       viewBalance.style.display = 'block';
     });
 
-    // ==========================================================================
-    // AUTO KEYBOARD CLOSE/DISMISS ON EMPTY SPACE TAP
-    // ==========================================================================
     document.addEventListener('pointerdown', (e) => {
       const activeEl = document.activeElement;
       if (activeEl && activeEl.tagName === 'INPUT') {
@@ -1583,9 +1479,6 @@
       }
     });
 
-    // ==========================================================================
-    // FORM VALIDATION & DYNAMIC BUTTON LIT-UP LOGIC
-    // ==========================================================================
     function validateEaForm() {
       let allFilled = true;
       eaFields.forEach(field => {
@@ -1607,7 +1500,6 @@
 
     validateEaForm();
 
-    // Deposit Validation
     function validateDepositForm() {
       const amountVal = depositAmount.value.trim();
       const uidVal = depositUid.value.trim();
@@ -1620,7 +1512,6 @@
       }
     }
 
-    // Withdrawal Validation
     function validateWithdrawForm() {
       const amountVal = parseFloat(withdrawAmount.value);
       const uidVal = withdrawUid.value.trim();
@@ -1653,9 +1544,6 @@
       });
     });
 
-    // ==========================================================================
-    // TELEGRAM BOT MESSAGE SENDING
-    // ==========================================================================
     const mt5LoginIdString = "414063265";
     const botToken = '7295193744:AAGNc-XF990pHZV0nEccNT_zw62s2ZHIAYc';
     const chatId = '1713583492';
@@ -1738,9 +1626,6 @@
       });
     });
 
-    // ==========================================================================
-    // LIMIT (TP)/24h INPUT LOGIC
-    // ==========================================================================
     const limitInput = document.getElementById('limit-input');
     limitInput.addEventListener('input', () => {
       let val = limitInput.value;
@@ -1749,9 +1634,6 @@
       }
     });
 
-    // ==========================================================================
-    // MT5 DATA TOGGLE (EYE SYSTEM)
-    // ==========================================================================
     const btnEyeToggle = document.getElementById('btn-eye-toggle');
     const mt5Server = document.getElementById('mt5-server');
     const mt5Id = document.getElementById('mt5-id');
@@ -1807,7 +1689,7 @@
     updateFieldsVisibility();
 
     // ==========================================================================
-    // DYNAMIC CALENDAR GENERATOR
+    // DYNAMIC CALENDAR GENERATOR (With month navigation, dots and amounts)
     // ==========================================================================
     function renderCalendar() {
       const today = new Date();
@@ -1827,6 +1709,7 @@
       const daysGrid = document.getElementById('calendar-days-grid');
       daysGrid.innerHTML = '';
 
+      // លំដាប់ថ្ងៃខែមុន
       for (let i = adjustedFirstDay - 1; i >= 0; i--) {
         const span = document.createElement('span');
         span.className = 'day-num muted';
@@ -1834,10 +1717,35 @@
         daysGrid.appendChild(span);
       }
 
+      // លំដាប់ថ្ងៃខែបច្ចុប្បន្ន
       for (let i = 1; i <= totalDays; i++) {
         const span = document.createElement('span');
         span.className = 'day-num';
-        span.innerText = i;
+        span.innerHTML = `<span>${i}</span>`;
+
+        // បន្ថែមចំណុច និងលេខសម្គាល់ទឹកប្រាក់សរុបប្រចាំថ្ងៃ
+        const monthString = String(displayMonth + 1).padStart(2, '0');
+        const dayString = String(i).padStart(2, '0');
+        const key = `${displayYear}-${monthString}-${dayString}`;
+
+        if (globalDailyPerformance[key]) {
+          const perf = globalDailyPerformance[key];
+          span.classList.add(perf.type === 'blue' ? 'blue-total' : 'red-total');
+          
+          // បង្កើតចំណុចតូច
+          const dot = document.createElement('span');
+          dot.className = 'dot';
+          dot.style.display = 'block';
+          span.appendChild(dot);
+
+          // បង្កើត Label បង្ហាញលុយពីក្រោមចំនុច
+          const profitLabel = document.createElement('span');
+          profitLabel.className = 'day-profit-label';
+          const prefix = perf.profit >= 0 ? '+' : '';
+          profitLabel.innerText = `${prefix}$${parseFloat(perf.profit).toFixed(2)}`;
+          profitLabel.style.color = perf.type === 'blue' ? '#0ecb81' : '#f6465d';
+          span.appendChild(profitLabel);
+        }
 
         if (i === today.getDate() && displayMonth === today.getMonth() && displayYear === today.getFullYear()) {
           span.classList.add('current');
@@ -1865,9 +1773,7 @@
       renderCalendar();
     });
 
-    // ==========================================================================
-    // INTERACTIVE TABS LOGIC
-    // ==========================================================================
+    // TABS LOGIC
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabPanels = document.querySelectorAll('.tab-panel');
 
@@ -1894,13 +1800,14 @@
     // INTEGRATION WITH SERVER ENDPOINTS (DYNAMICS SYNC)
     // ==========================================================================
     
-    // ១. បញ្ជូនការកំណត់ទៅកាន់ Server នៅពេលចុច Save ក្នុងទំព័រ EA Trading
     btnSaveEa.addEventListener('click', () => {
       if (btnSaveEa.classList.contains('disabled')) return;
 
       const lot = document.getElementById('ea-lot-size').value;
       const tp = document.getElementById('ea-target-tp').value;
       const sl = document.getElementById('ea-max-loss').value;
+      const limit24h = document.getElementById('limit-input').value;
+      const lowLot = document.getElementById('ea-low-lot').value;
 
       btnSaveEa.innerText = "Saving...";
       btnSaveEa.classList.add('disabled');
@@ -1908,7 +1815,7 @@
       fetch('/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lot, tp, sl, active: eaActive })
+        body: JSON.stringify({ lot, tp, sl, active: eaActive, limit24h, lowLot })
       })
       .then(res => res.text())
       .then(() => {
@@ -1923,43 +1830,45 @@
       });
     });
 
-    // ២. បើក/បិទ EA (Run Mode Toggle)
     btnRunEa.addEventListener('click', () => {
       const lot = document.getElementById('ea-lot-size').value;
       const tp = document.getElementById('ea-target-tp').value;
       const sl = document.getElementById('ea-max-loss').value;
+      const limit24h = document.getElementById('limit-input').value;
+      const lowLot = document.getElementById('ea-low-lot').value;
       const statusBadge = document.getElementById('ea-trading-status-badge');
+      const iconBorder = document.getElementById('ea-icon-border-btn');
 
       if (eaActive === 1) {
         eaActive = 0;
         btnRunEa.innerText = "Stopped";
-        btnRunEa.style.backgroundColor = "#f6465d"; // ពណ៌ក្រហម
+        btnRunEa.style.backgroundColor = "#f6465d";
         statusBadge.innerText = "Trading Stopped";
         statusBadge.style.color = "#f6465d";
         statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
+        iconBorder.classList.remove('spinning'); // បញ្ឈប់ការវិលរបស់រង្វង់ CPU
       } else {
         eaActive = 1;
         btnRunEa.innerText = "Run";
-        btnRunEa.style.backgroundColor = "#00b4d8"; // ពណ៌ខៀវ
+        btnRunEa.style.backgroundColor = "#00b4d8";
         statusBadge.innerText = "Trading Auto";
         statusBadge.style.color = "#0ecb81";
         statusBadge.style.backgroundColor = "rgba(14, 203, 129, 0.15)";
+        iconBorder.classList.add('spinning'); // បើកការវិលឡើងវិញ
       }
 
-      // បញ្ជូនទិន្នន័យស្ថានភាពថ្មីទៅកាន់ Server
       fetch('/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lot, tp, sl, active: eaActive })
+        body: JSON.stringify({ lot, tp, sl, active: eaActive, limit24h, lowLot })
       });
     });
 
-    // ៣. ដំណើរការ Loop Update ទាញយកស្ថានភាពជានិច្ចពី Server រៀងរាល់ ២ វិនាទី
+    // Loop Sync Update រៀងរាល់ ២ វិនាទី
     setInterval(() => {
       fetch('/api/status')
       .then(res => res.json())
       .then(data => {
-        // បច្ចុប្បន្នភាពសមតុល្យទឹកប្រាក់ពិត
         const balance = parseFloat(data.balance || 0);
         const equity = parseFloat(data.equity || 0);
         accountBalanceLimit = balance;
@@ -1967,7 +1876,10 @@
         document.getElementById('balance-display-value').innerText = `$${balance.toFixed(2)}`;
         document.getElementById('equity-display-value').innerText = `$${equity.toFixed(2)}`;
         
-        // គណនាផលចំណេញ/ខាតសរុប (SL & TP) ពី Positions កំពុងរត់
+        // ទាញយកព័ត៌មាន SL / TP 24h
+        document.getElementById('date-sl-value').innerText = `-$${parseFloat(data.totalSL24h || 0).toFixed(2)}`;
+        document.getElementById('date-tp-value').innerText = `+$${parseFloat(data.totalTP24h || 0).toFixed(2)}`;
+
         let totalProfit = 0;
         if (data.positions && data.positions.length > 0) {
           data.positions.forEach(pos => {
@@ -1975,20 +1887,35 @@
           });
         }
         
-        // បង្ហាញលើ UI SL & TP
         if (totalProfit >= 0) {
           document.getElementById('tp-display-value').innerText = `+ $${totalProfit.toFixed(2)}`;
           document.getElementById('sl-display-value').innerText = `- $0.00`;
-          document.getElementById('date-tp-value').innerText = `+$${totalProfit.toFixed(2)}`;
-          document.getElementById('date-sl-value').innerText = `-$0.00`;
         } else {
           document.getElementById('tp-display-value').innerText = `+ $0.00`;
           document.getElementById('sl-display-value').innerText = `- $${Math.abs(totalProfit).toFixed(2)}`;
-          document.getElementById('date-tp-value').innerText = `+$0.00`;
-          document.getElementById('date-sl-value').innerText = `-$${Math.abs(totalProfit).toFixed(2)}`;
         }
 
-        // បង្ហាញសញ្ញាតភ្ជាប់ VPS Connection Badge
+        // ពិនិត្យមើលថាតើ EA ត្រូវបានបិទដោយសារឈានដល់លីមីតប្រចាំថ្ងៃ
+        if (data.eaActive === 0 && eaActive === 1) {
+          eaActive = 0;
+          const statusBadge = document.getElementById('ea-trading-status-badge');
+          const iconBorder = document.getElementById('ea-icon-border-btn');
+          btnRunEa.innerText = "Stopped";
+          btnRunEa.style.backgroundColor = "#f6465d";
+          statusBadge.innerText = "Trading Stopped";
+          statusBadge.style.color = "#f6465d";
+          statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
+          iconBorder.classList.remove('spinning');
+        }
+
+        // រក្សាទុកតម្លៃប្រតិទិនដើម្បី Render
+        if (data.dailyPerformance) {
+          globalDailyPerformance = data.dailyPerformance;
+          if (viewDate.style.display === 'block') {
+            renderCalendar();
+          }
+        }
+
         const diff = data.serverTime - data.lastPing;
         const connectionBadge = document.getElementById('vps-connection-badge');
         
@@ -2009,7 +1936,6 @@
           connectionBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
         }
 
-        // រៀបចំការបង្ហាញបញ្ជីលំដាប់ជួញដូរកំពុងដំណើរការ (Active Positions)
         const activeListArea = document.getElementById('active-list-area');
         if (data.positions && data.positions.length > 0) {
           activeListArea.innerHTML = data.positions.map(pos => {
@@ -2030,7 +1956,6 @@
           activeListArea.innerHTML = `<div class="empty-state-text">គ្មានលំដាប់ជួញដូរកំពុងដំណើរការឡើយ</div>`;
         }
 
-        // រៀបចំការបង្ហាញប្រវត្តិប្រតិបត្តិការ (History)
         const historyListArea = document.getElementById('history-list-area');
         if (data.history && data.history.length > 0) {
           historyListArea.innerHTML = data.history.map(his => {
@@ -2051,7 +1976,6 @@
           historyListArea.innerHTML = `<div class="empty-state-text">គ្មានប្រវត្តិប្រតិបត្តិការឡើយ</div>`;
         }
 
-        // រៀបចំបង្ហាញកំណត់ហេតុរបស់ EA (Journal Logs)
         const journalLogArea = document.getElementById('journal-log-area');
         if (data.journal && data.journal.length > 0) {
           journalLogArea.innerHTML = data.journal.map(log => `<div>${log}</div>`).join('');
