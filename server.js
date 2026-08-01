@@ -7,7 +7,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// រក្សាទុកទិន្នន័យក្នុង Memory (In-Memory Data Center)
 let mt5Status = {
     balance: "0.00",
     equity: "0.00",
@@ -21,17 +20,18 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// API ទទួលតម្លៃកំណត់ត្រេដពីទំព័រ UX/UI Bybit
+// API ទទួលការកំណត់ពីទំព័រ Dashboard
 app.post('/save', (req, res) => {
-    const { lot, tp, sl, active } = req.body;
-    const csvData = `${lot},${tp},${sl},${active}`;
+    const { lot, tp, sl, active, limit24h, lowLot } = req.body;
+    // រក្សាទុកតម្លៃទាំង ៦ ទៅកាន់ Settings File
+    const csvData = `${lot},${tp},${sl},${active},${limit24h},${lowLot}`;
     
     fs.writeFileSync(__dirname + '/settings.txt', csvData);
-    console.log("Updated EA Settings on Server: " + csvData);
+    console.log("Updated CSV Settings: " + csvData);
     res.send("Saved");
 });
 
-// API សម្រាប់ទទួលព័ត៌មានលម្អិតពី VPS MT5 (WebRequest POST)
+// API សម្រាប់ភ្ជាប់ជាមួយ MT5 VPS
 app.post('/get-settings', (req, res) => {
     const { balance, equity, positions, history, journal } = req.body;
     
@@ -42,19 +42,19 @@ app.post('/get-settings', (req, res) => {
     try {
         if (positions) parsedPositions = JSON.parse(positions);
     } catch (e) {
-        console.log("Error parsing MT5 positions:", e);
+        console.log("Error parsing positions:", e);
     }
 
     try {
         if (history) parsedHistory = JSON.parse(history);
     } catch (e) {
-        console.log("Error parsing MT5 history:", e);
+        console.log("Error parsing history:", e);
     }
 
     try {
         if (journal) parsedJournal = JSON.parse(journal);
     } catch (e) {
-        console.log("Error parsing MT5 journal logs:", e);
+        console.log("Error parsing journal logs:", e);
     }
     
     mt5Status = {
@@ -70,11 +70,11 @@ app.post('/get-settings', (req, res) => {
         const data = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
         res.send(data);
     } catch (err) {
-        res.send("0.01,0.65,5.00,1");
+        // បើគ្មានឯកសារទេ ផ្ញើ default parameters ទាំង ៦ ទៅកាន់ MT5
+        res.send("0.01,0.65,5.00,1,0.50,0.30");
     }
 });
 
-// API បញ្ជូនទិន្នន័យទៅឱ្យ Interface Dashboard បង្ហាញ UI
 app.get('/api/status', (req, res) => {
     res.json({
         ...mt5Status,
@@ -84,4 +84,4 @@ app.get('/api/status', (req, res) => {
     });
 });
 
-app.listen(PORT, () => console.log(`Bybit Style Cloud Server started`));
+app.listen(PORT, () => console.log(`Server is running`));
