@@ -1,7 +1,12 @@
 const express = require('express');
 const fs = require('fs');
+const fetch = require('node-fetch'); // ធានាថាមានកញ្ចប់នេះ ឬប្រើប្រាស់ Built-in fetch លើ Node.js 18+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const BOT_TOKEN = '7295193744:AAGNc-XF990pHZV0nEccNT_zw62s2ZHIAYc';
+const CHAT_ID = '1713583492';
+const RENDER_URL = 'https://mt5-controller-v1.onrender.com';
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,18 +21,148 @@ let mt5Status = {
     lastPing: 0
 };
 
+// ស្វ័យប្រវត្តិដំឡើង Webhook សម្រាប់ទទួលទិន្នន័យពីតេឡេក្រាម
+fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${RENDER_URL}/telegram-webhook`)
+    .then(res => res.json())
+    .then(json => console.log("Telegram Webhook Configured:", json))
+    .catch(err => console.log("Webhook Configuration Error:", err));
+
+// ជំនួយការអាន/សរសេរទិន្នន័យប្រតិបត្តិការ
+function getTransactions() {
+    try {
+        if (fs.existsSync(__dirname + '/transactions.json')) {
+            return JSON.parse(fs.readFileSync(__dirname + '/transactions.json', 'utf8'));
+        }
+    } catch (e) {
+        console.log("Error reading transactions.json:", e);
+    }
+    return [];
+}
+
+function saveTransactions(txs) {
+    fs.writeFileSync(__dirname + '/transactions.json', JSON.stringify(txs, null, 2));
+}
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// API ទទួលការកំណត់ពីទំព័រ Dashboard
+// API ទាញយកបញ្ជីប្រតិបត្តិការដាក់/ដកប្រាក់
+app.get('/api/transactions', (req, res) => {
+    res.json(getTransactions());
+});
+
+// API បង្កើតប្រតិបត្តិការថ្មី (ដាក់/ដកប្រាក់)
+app.post('/api/transaction', async (req, res) => {
+    const { type, amount, uid, account } = req.body;
+    const txs = getTransactions();
+
+    // ពិនិត្យមើលថាតើមានប្រតិបត្តិការដែលកំពុងរង់ចាំ (Pending) ដែរឬទេ
+    const hasPending = txs.some(t => t.status === 'Pending');
+    if (hasPending) {
+        return res.status(400).send("You already have an active pending transaction.");
+    }
+
+    const newTx = {
+        id: Date.now().toString(),
+        type, // 'Deposit' ឬ 'Withdrawal'
+        amount,
+        uid,
+        account,
+        status: 'Pending',
+        time: new Date().toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toLocaleDateString('km-KH')
+    };
+
+    txs.unshift(newTx);
+    saveTransactions(txs);
+
+    // រៀបចំសារផ្ញើទៅតេឡេក្រាមជាមួយប៊ូតុងបញ្ជាក់
+    const messageText = `🔔 ${type} Request 🔔\n\n🔑 Login ID: 414063265\n💵 Amount: $${amount}\n🆔 UID BOBOTOU.io: ${uid}\n👤 Account BOBOTOU: ${account}\n\nStatus: Pending`;
+    
+    const keyboard = {
+        inline_keyboard: [
+            [
+                { text: "Done ✅", callback_data: `done_${newTx.id}` },
+                { text: "Rejection ❌", callback_data: `reject_${newTx.id}` }
+            ]
+        ]
+    };
+
+    try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: messageText,
+                reply_markup: keyboard
+            })
+        });
+    } catch (e) {
+        console.log("Telegram Send Message Error:", e);
+    }
+
+    res.json({ success: true, tx: newTx });
+});
+
+// Telegram Webhook ទទួលការបញ្ជាក់ពី Admin
+app.post('/telegram-webhook', async (req, res) => {
+    const update = req.body;
+    if (update && update.callback_query) {
+        const query = update.callback_query;
+        const data = query.data; // eg. 'done_1700000000'
+        const parts = data.split('_');
+        const action = parts[0]; // 'done' ឬ 'reject'
+        const txId = parts[1];
+
+        const txs = getTransactions();
+        const tx = txs.find(t => t.id === txId);
+
+        if (tx && tx.status === 'Pending') {
+            tx.status = action === 'done' ? 'Success' : 'Refusal';
+            saveTransactions(txs);
+
+            // កែសម្រួលសារចាស់នៅក្នុងតេឡេក្រាមដើម្បីបង្ហាញស្ថានភាពចុងក្រោយ
+            const updatedText = `🔔 ${tx.type} Request Updated 🔔\n\n🔑 Login ID: 414063265\n💵 Amount: $${tx.amount}\n🆔 UID BOBOTOU.io: ${tx.uid}\n👤 Account BOBOTOU: ${tx.account}\n\nStatus: ${tx.status === 'Success' ? 'Success ✅' : 'Refusal ❌'}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: query.message.chat.id,
+                        message_id: query.message.message_id,
+                        text: updatedText,
+                        reply_markup: { inline_keyboard: [] } // លុបប៊ូតុងបញ្ជាក់ចេញ
+                    })
+                });
+            } catch (e) {
+                console.log("Telegram Edit Message Error:", e);
+            }
+        }
+
+        try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    callback_query_id: query.id,
+                    text: `ការបញ្ជាក់ជោគជ័យ៖ ${tx ? tx.status : "Unknown"}`
+                })
+            });
+        } catch (e) {
+            console.log("Telegram Answer Callback Error:", e);
+        }
+    }
+    res.sendStatus(200);
+});
+
+// API រក្សាទុកការកំណត់ទូទៅ
 app.post('/save', (req, res) => {
     const { lot, tp, sl, active, limit24h, lowLot } = req.body;
-    // រក្សាទុកតម្លៃទាំង ៦ ទៅកាន់ Settings File
     const csvData = `${lot},${tp},${sl},${active},${limit24h},${lowLot}`;
-    
     fs.writeFileSync(__dirname + '/settings.txt', csvData);
-    console.log("Updated CSV Settings: " + csvData);
     res.send("Saved");
 });
 
@@ -39,23 +174,9 @@ app.post('/get-settings', (req, res) => {
     let parsedHistory = [];
     let parsedJournal = [];
 
-    try {
-        if (positions) parsedPositions = JSON.parse(positions);
-    } catch (e) {
-        console.log("Error parsing positions:", e);
-    }
-
-    try {
-        if (history) parsedHistory = JSON.parse(history);
-    } catch (e) {
-        console.log("Error parsing history:", e);
-    }
-
-    try {
-        if (journal) parsedJournal = JSON.parse(journal);
-    } catch (e) {
-        console.log("Error parsing journal logs:", e);
-    }
+    try { if (positions) parsedPositions = JSON.parse(positions); } catch (e) {}
+    try { if (history) parsedHistory = JSON.parse(history); } catch (e) {}
+    try { if (journal) parsedJournal = JSON.parse(journal); } catch (e) {}
     
     mt5Status = {
         balance: balance || "0.00",
@@ -70,7 +191,6 @@ app.post('/get-settings', (req, res) => {
         const data = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
         res.send(data);
     } catch (err) {
-        // បើគ្មានឯកសារទេ ផ្ញើ default parameters ទាំង ៦ ទៅកាន់ MT5
         res.send("0.01,0.65,5.00,1,0.50,0.30");
     }
 });
@@ -84,4 +204,4 @@ app.get('/api/status', (req, res) => {
     });
 });
 
-app.listen(PORT, () => console.log(`Server is running`));
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
