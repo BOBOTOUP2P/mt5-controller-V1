@@ -17,8 +17,7 @@ let mt5Status = {
     positions: [],
     history: [],
     journal: [],
-    closed_tp_24h: "0.00",
-    closed_sl_24h: "0.00",
+    closedToday: "0.00", // រក្សាទុកតម្លៃចំណេញដែលបានបិទថ្ងៃនេះ
     lastPing: 0
 };
 
@@ -26,7 +25,7 @@ if (typeof fetch !== 'undefined') {
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${RENDER_URL}/telegram-webhook`)
         .then(res => res.json())
         .then(json => console.log("Telegram Webhook Configured:", json))
-        .catch(err => console.log("Webhook Configuration Error:", err));
+        .catch(err => console.log("Webhook Error:", err));
 }
 
 function getTransactions() {
@@ -34,18 +33,14 @@ function getTransactions() {
         if (fs.existsSync(__dirname + '/transactions.json')) {
             return JSON.parse(fs.readFileSync(__dirname + '/transactions.json', 'utf8'));
         }
-    } catch (e) {
-        console.log("Error reading transactions.json:", e);
-    }
+    } catch (e) {}
     return [];
 }
 
 function saveTransactions(txs) {
     try {
         fs.writeFileSync(__dirname + '/transactions.json', JSON.stringify(txs, null, 2));
-    } catch (e) {
-        console.log("Error writing transactions.json:", e);
-    }
+    } catch (e) {}
 }
 
 app.get('/', (req, res) => {
@@ -102,9 +97,7 @@ app.post('/api/transaction', async (req, res) => {
                 })
             });
         }
-    } catch (e) {
-        console.log("Telegram Send Message Error:", e);
-    }
+    } catch (e) {}
 
     res.json({ success: true, tx: newTx });
 });
@@ -140,9 +133,7 @@ app.post('/telegram-webhook', async (req, res) => {
                         })
                     });
                 }
-            } catch (e) {
-                console.log("Telegram Edit Message Error:", e);
-            }
+            } catch (e) {}
         }
 
         try {
@@ -156,9 +147,7 @@ app.post('/telegram-webhook', async (req, res) => {
                     })
                 });
             }
-        } catch (e) {
-            console.log("Telegram Answer Callback Error:", e);
-        }
+        } catch (e) {}
     }
     res.sendStatus(200);
 });
@@ -175,7 +164,7 @@ app.post('/save', (req, res) => {
 });
 
 app.post('/get-settings', (req, res) => {
-    const { balance, equity, positions, history, journal, closed_tp_24h, closed_sl_24h } = req.body;
+    const { balance, equity, positions, history, journal, closed_today } = req.body;
     
     let parsedPositions = [];
     let parsedHistory = [];
@@ -191,8 +180,7 @@ app.post('/get-settings', (req, res) => {
         positions: parsedPositions,
         history: parsedHistory,
         journal: parsedJournal,
-        closed_tp_24h: closed_tp_24h || "0.00",
-        closed_sl_24h: closed_sl_24h || "0.00",
+        closedToday: closed_today || "0.00", // បញ្ជូនទិន្នន័យចំណេញពិតប្រាកដប្រចាំថ្ងៃ
         lastPing: Date.now()
     };
     
@@ -201,7 +189,7 @@ app.post('/get-settings', (req, res) => {
         res.send(data);
     } catch (err) {
         res.send("0.01,0.65,5.00,0,0.50,0.30,XAU/USD");
-    }
+      }
 });
 
 app.get('/api/status', (req, res) => {
@@ -213,4 +201,4 @@ app.get('/api/status', (req, res) => {
     });
 });
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
