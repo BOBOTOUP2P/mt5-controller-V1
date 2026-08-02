@@ -20,17 +20,14 @@ let mt5Status = {
     lastPing: 0
 };
 
-// ដំឡើង Webhook ទៅកាន់តេឡេក្រាមដោយប្រើប្រាស់ Built-in Fetch របស់ Node.js
+// ដំឡើង Webhook ទៅកាន់តេឡេក្រាម
 if (typeof fetch !== 'undefined') {
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${RENDER_URL}/telegram-webhook`)
         .then(res => res.json())
-        .then(json => console.log("Telegram Webhook configured:", json))
-        .catch(err => console.log("Webhook configuration error:", err));
-} else {
-    console.log("Native fetch is not supported on this Node.js version.");
+        .then(json => console.log("Telegram Webhook Configured:", json))
+        .catch(err => console.log("Webhook Configuration Error:", err));
 }
 
-// ជំនួយការអាន/សរសេរទិន្នន័យប្រតិបត្តិការ
 function getTransactions() {
     try {
         if (fs.existsSync(__dirname + '/transactions.json')) {
@@ -54,17 +51,14 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-// API ទាញយកបញ្ជីប្រតិបត្តិការដាក់/ដកប្រាក់
 app.get('/api/transactions', (req, res) => {
     res.json(getTransactions());
 });
 
-// API បង្កើតប្រតិបត្តិការថ្មី (ដាក់/ដកប្រាក់)
 app.post('/api/transaction', async (req, res) => {
     const { type, amount, uid, account } = req.body;
     const txs = getTransactions();
 
-    // ពិនិត្យមើលថាតើមានប្រតិបត្តិការដែលកំពុងរង់ចាំ (Pending) ដែរឬទេ
     const hasPending = txs.some(t => t.status === 'Pending');
     if (hasPending) {
         return res.status(400).send("You already have an active pending transaction.");
@@ -84,7 +78,6 @@ app.post('/api/transaction', async (req, res) => {
     txs.unshift(newTx);
     saveTransactions(txs);
 
-    // រៀបចំសារផ្ញើទៅតេឡេក្រាមជាមួយប៊ូតុងបញ្ជាក់
     const messageText = `🔔 ${type} Request 🔔\n\n🔑 Login ID: 414063265\n💵 Amount: $${amount}\n🆔 UID BOBOTOU.io: ${uid}\n👤 Account BOBOTOU: ${account}\n\nStatus: Pending`;
     
     const keyboard = {
@@ -115,7 +108,6 @@ app.post('/api/transaction', async (req, res) => {
     res.json({ success: true, tx: newTx });
 });
 
-// Telegram Webhook ទទួលការបញ្ជាក់ពី Admin
 app.post('/telegram-webhook', async (req, res) => {
     const update = req.body;
     if (update && update.callback_query) {
@@ -132,7 +124,6 @@ app.post('/telegram-webhook', async (req, res) => {
             tx.status = action === 'done' ? 'Success' : 'Refusal';
             saveTransactions(txs);
 
-            // កែសម្រួលសារចាស់នៅក្នុងតេឡេក្រាមដើម្បីបង្ហាញស្ថានភាពចុងក្រោយ
             const updatedText = `🔔 ${tx.type} Request Updated 🔔\n\n🔑 Login ID: 414063265\n💵 Amount: $${tx.amount}\n🆔 UID BOBOTOU.io: ${tx.uid}\n👤 Account BOBOTOU: ${tx.account}\n\nStatus: ${tx.status === 'Success' ? 'Success ✅' : 'Refusal ❌'}`;
 
             try {
@@ -171,10 +162,10 @@ app.post('/telegram-webhook', async (req, res) => {
     res.sendStatus(200);
 });
 
-// API រក្សាទុកការកំណត់ទូទៅ
+// រក្សាទុកប៉ារ៉ាម៉ែត្រទាំង ៧ ទៅកាន់ឯកសារ settings.txt
 app.post('/save', (req, res) => {
-    const { lot, tp, sl, active, limit24h, lowLot } = req.body;
-    const csvData = `${lot},${tp},${sl},${active},${limit24h},${lowLot}`;
+    const { lot, tp, sl, active, limit24h, lowLot, symbol } = req.body;
+    const csvData = `${lot},${tp},${sl},${active},${limit24h},${lowLot},${symbol}`;
     try {
         fs.writeFileSync(__dirname + '/settings.txt', csvData);
         res.send("Saved");
@@ -183,7 +174,6 @@ app.post('/save', (req, res) => {
     }
 });
 
-// API សម្រាប់ភ្ជាប់ជាមួយ MT5 VPS
 app.post('/get-settings', (req, res) => {
     const { balance, equity, positions, history, journal } = req.body;
     
@@ -208,7 +198,8 @@ app.post('/get-settings', (req, res) => {
         const data = fs.readFileSync(__dirname + '/settings.txt', 'utf8');
         res.send(data);
     } catch (err) {
-        res.send("0.01,0.65,5.00,1,0.50,0.30");
+        // កំណត់ចាប់ផ្តើមដំបូងជា Trading Stopped (active = 0) និងកាក់ XAU/USD 
+        res.send("0.01,0.65,5.00,0,0.50,0.30,XAU/USD");
     }
 });
 
