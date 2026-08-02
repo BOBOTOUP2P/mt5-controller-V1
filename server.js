@@ -1,6 +1,5 @@
 const express = require('express');
 const fs = require('fs');
-const fetch = require('node-fetch'); // ធានាថាមានកញ្ចប់នេះ ឬប្រើប្រាស់ Built-in fetch លើ Node.js 18+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,11 +20,15 @@ let mt5Status = {
     lastPing: 0
 };
 
-// ស្វ័យប្រវត្តិដំឡើង Webhook សម្រាប់ទទួលទិន្នន័យពីតេឡេក្រាម
-fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${RENDER_URL}/telegram-webhook`)
-    .then(res => res.json())
-    .then(json => console.log("Telegram Webhook Configured:", json))
-    .catch(err => console.log("Webhook Configuration Error:", err));
+// ដំឡើង Webhook ទៅកាន់តេឡេក្រាមដោយប្រើប្រាស់ Built-in Fetch របស់ Node.js
+if (typeof fetch !== 'undefined') {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${RENDER_URL}/telegram-webhook`)
+        .then(res => res.json())
+        .then(json => console.log("Telegram Webhook configured:", json))
+        .catch(err => console.log("Webhook configuration error:", err));
+} else {
+    console.log("Native fetch is not supported on this Node.js version.");
+}
 
 // ជំនួយការអាន/សរសេរទិន្នន័យប្រតិបត្តិការ
 function getTransactions() {
@@ -40,7 +43,11 @@ function getTransactions() {
 }
 
 function saveTransactions(txs) {
-    fs.writeFileSync(__dirname + '/transactions.json', JSON.stringify(txs, null, 2));
+    try {
+        fs.writeFileSync(__dirname + '/transactions.json', JSON.stringify(txs, null, 2));
+    } catch (e) {
+        console.log("Error writing transactions.json:", e);
+    }
 }
 
 app.get('/', (req, res) => {
@@ -65,7 +72,7 @@ app.post('/api/transaction', async (req, res) => {
 
     const newTx = {
         id: Date.now().toString(),
-        type, // 'Deposit' ឬ 'Withdrawal'
+        type, 
         amount,
         uid,
         account,
@@ -90,15 +97,17 @@ app.post('/api/transaction', async (req, res) => {
     };
 
     try {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: messageText,
-                reply_markup: keyboard
-            })
-        });
+        if (typeof fetch !== 'undefined') {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: messageText,
+                    reply_markup: keyboard
+                })
+            });
+        }
     } catch (e) {
         console.log("Telegram Send Message Error:", e);
     }
@@ -111,9 +120,9 @@ app.post('/telegram-webhook', async (req, res) => {
     const update = req.body;
     if (update && update.callback_query) {
         const query = update.callback_query;
-        const data = query.data; // eg. 'done_1700000000'
+        const data = query.data; 
         const parts = data.split('_');
-        const action = parts[0]; // 'done' ឬ 'reject'
+        const action = parts[0]; 
         const txId = parts[1];
 
         const txs = getTransactions();
@@ -127,30 +136,34 @@ app.post('/telegram-webhook', async (req, res) => {
             const updatedText = `🔔 ${tx.type} Request Updated 🔔\n\n🔑 Login ID: 414063265\n💵 Amount: $${tx.amount}\n🆔 UID BOBOTOU.io: ${tx.uid}\n👤 Account BOBOTOU: ${tx.account}\n\nStatus: ${tx.status === 'Success' ? 'Success ✅' : 'Refusal ❌'}`;
 
             try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: query.message.chat.id,
-                        message_id: query.message.message_id,
-                        text: updatedText,
-                        reply_markup: { inline_keyboard: [] } // លុបប៊ូតុងបញ្ជាក់ចេញ
-                    })
-                });
+                if (typeof fetch !== 'undefined') {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: query.message.chat.id,
+                            message_id: query.message.message_id,
+                            text: updatedText,
+                            reply_markup: { inline_keyboard: [] } 
+                        })
+                    });
+                }
             } catch (e) {
                 console.log("Telegram Edit Message Error:", e);
             }
         }
 
         try {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    callback_query_id: query.id,
-                    text: `ការបញ្ជាក់ជោគជ័យ៖ ${tx ? tx.status : "Unknown"}`
-                })
-            });
+            if (typeof fetch !== 'undefined') {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        callback_query_id: query.id,
+                        text: `ការបញ្ជាក់ជោគជ័យ៖ ${tx ? tx.status : "Unknown"}`
+                    })
+                });
+            }
         } catch (e) {
             console.log("Telegram Answer Callback Error:", e);
         }
@@ -162,8 +175,12 @@ app.post('/telegram-webhook', async (req, res) => {
 app.post('/save', (req, res) => {
     const { lot, tp, sl, active, limit24h, lowLot } = req.body;
     const csvData = `${lot},${tp},${sl},${active},${limit24h},${lowLot}`;
-    fs.writeFileSync(__dirname + '/settings.txt', csvData);
-    res.send("Saved");
+    try {
+        fs.writeFileSync(__dirname + '/settings.txt', csvData);
+        res.send("Saved");
+    } catch (e) {
+        res.status(500).send("Error saving settings");
+    }
 });
 
 // API សម្រាប់ភ្ជាប់ជាមួយ MT5 VPS
