@@ -604,7 +604,7 @@
     }
 
     .auto-trading-badge {
-      background-color: rgba(246, 70, 93, 0.15); 
+      background-color: rgba(246, 70, 93, 0.15); /* ចាប់ផ្តើមជា Stopped (ក្រហម) */
       color: #f6465d;
       padding: 8px 12px;
       border-radius: 8px;
@@ -636,7 +636,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .btn-blue-run { background-color: #f6465d; color: #ffffff; } 
+    .btn-blue-run { background-color: #f6465d; color: #ffffff; } /* ចាប់ផ្តើមប៊ូតុង Run ជាក្រហម */
 
     .tabs-container {
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -902,11 +902,11 @@
 
       <div class="sl-tp-row">
         <div class="sl-tp-card">
-          <div class="sl-tp-title">Total SL 24/h</div>
+          <div class="sl-tp-title">Total (SL)</div>
           <div class="sl-tp-value sl-color" id="sl-display-value">- $0.00</div>
         </div>
         <div class="sl-tp-card">
-          <div class="sl-tp-title">Total TP 24/h</div>
+          <div class="sl-tp-title">Total (TP)</div>
           <div class="sl-tp-value tp-color" id="tp-display-value">+ $0.00</div>
         </div>
       </div>
@@ -1112,12 +1112,13 @@
           <input type="text" class="form-input sl-input-color ea-field" id="ea-max-loss" value="5.00">
         </div>
         <div class="ea-form-group ea-auto-align">
-          <div class="ea-icon-border-btn stopped" id="ea-spinner-icon"> 
+          <div class="ea-icon-border-btn stopped" id="ea-spinner-icon"> <!-- កំណត់ stopped ពីដំបូង -->
             <i data-lucide="cpu" size="18"></i>
           </div>
-          <div class="auto-trading-badge" id="ea-trading-status-badge">Trading Stopped</div> 
+          <div class="auto-trading-badge" id="ea-trading-status-badge">Trading Stopped</div> <!-- កំណត់ Trading Stopped ពីដំបូង -->
         </div>
 
+        <!-- ប៊ូតុងសម្រាប់ជ្រើសរើសកាក់ BTC/USD, XAU/USD, AUD/USD ដាក់នៅខាងក្រោម MAX LOSS SL ($) -->
         <div class="ea-form-group" style="grid-column: span 2; margin-top: 4px;">
           <span class="ea-input-label">Select Symbol (ជ្រើសរើសកាក់)</span>
           <select class="form-input ea-field" id="ea-symbol" style="background-color: #1e2026; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); width: 100%; cursor: pointer; font-weight: 600;">
@@ -1130,7 +1131,7 @@
 
       <div class="buttons-row">
         <button class="ea-half-btn btn-dark-save disabled" id="btn-save-ea">Save</button>
-        <button class="ea-half-btn btn-blue-run" id="btn-run-ea">Stopped</button> 
+        <button class="ea-half-btn btn-blue-run" id="btn-run-ea">Stopped</button> <!-- កំណត់ជា Stopped ពីដំបូង -->
       </div>
 
       <div class="tabs-container">
@@ -1313,6 +1314,7 @@
         <h2>Transaction History</h2>
       </div>
       <div id="tx-history-list" style="margin-bottom: 24px; min-height: 220px; max-height: 380px; overflow-y: auto;">
+        <!-- ទិន្នន័យត្រូវបានបង្កើតដោយ Dynamic JavaScript -->
       </div>
       <button class="nav-btn-wide" id="btn-tx-history-back">
         <i data-lucide="arrow-left" size="16"></i> Back to Balance
@@ -1324,6 +1326,7 @@
   <script>
     lucide.createIcons();
 
+    // Slider Interactivity JS
     const slider = document.getElementById('heightSlider');
     const thumb = document.getElementById('customThumb');
     const activeTrack = document.getElementById('activeTrack');
@@ -1337,6 +1340,7 @@
     slider.addEventListener('input', updateSlider);
     updateSlider();
 
+    // Elements & Views
     const viewBalance = document.getElementById('view-balance');
     const viewMain = document.getElementById('view-main');
     const viewEaTrading = document.getElementById('view-ea-trading');
@@ -1345,6 +1349,7 @@
     const viewWithdraw = document.getElementById('view-withdraw');
     const viewTxHistory = document.getElementById('view-tx-history');
 
+    // Navigation Buttons
     const btnGotoChartSettings = document.getElementById('btn-goto-chart-settings');
     const btnBalance = document.getElementById('btn-balance');
     const btnEaTrading = document.getElementById('btn-ea-trading');
@@ -1352,17 +1357,21 @@
     const btnDate = document.getElementById('btn-date');
     const btnDateBack = document.getElementById('btn-date-back');
     
+    // Deposit / Withdrawal Navigations
     const btnDeposit = document.querySelector('.btn-deposit');
     const btnDepositBack = document.getElementById('btn-deposit-back');
     const btnWithdraw = document.querySelector('.btn-withdraw');
     const btnWithdrawBack = document.getElementById('btn-withdraw-back');
 
+    // History Navigations
     const btnTxHistory = document.getElementById('btn-tx-history');
     const btnTxHistoryBack = document.getElementById('btn-tx-history-back');
 
+    // Save and Run Action Buttons
     const btnSaveEa = document.getElementById('btn-save-ea');
     const btnRunEa = document.getElementById('btn-run-ea');
 
+    // Inputs
     const btnSubmitDeposit = document.getElementById('btn-submit-deposit');
     const depositAmount = document.getElementById('deposit-amount');
     const depositUid = document.getElementById('deposit-uid');
@@ -1374,21 +1383,25 @@
     const withdrawAccount = document.getElementById('withdraw-account');
     const quickAmtBtns = document.querySelectorAll('.quick-amt-btn');
 
+    // EA Fields 
     const eaFields = document.querySelectorAll('.ea-field');
     const eaSymbolSelect = document.getElementById('ea-symbol');
 
+    // Global Values State
     let accountBalanceLimit = 0.00;
-    let eaActive = 0; 
+    let eaActive = 0; // កំណត់ត្រឹម 0 (Stopped) ជាតម្លៃលំនាំដើមនៃការចាប់ផ្តើមដំបូង
     let limit24hVal = 0.50;
     let lowLotVal = 0.30;
     let pendingTxExist = false; 
 
+    // ទាញយកទិន្នន័យពី LocalStorage ដើម្បីកុំឱ្យបាត់បង់ទិន្នន័យពេលបិទម៉ាស៊ីន/App
     let dailyHistoryData = JSON.parse(localStorage.getItem('dailyHistoryData')) || {};
 
     let navDate = new Date();
     let displayYear = navDate.getFullYear();
     let displayMonth = navDate.getMonth();
 
+    // មុខងារផ្ទុកប៉ារ៉ាម៉ែត្រចាស់ពី LocalStorage មកលើ UI ភ្លាមៗមុនពេលទិន្នន័យ Server មកដល់
     function loadLocalSettings() {
       const localParams = JSON.parse(localStorage.getItem('eaSettingsParams'));
       if (localParams) {
@@ -1468,6 +1481,7 @@
       viewBalance.style.display = 'block';
     });
 
+    // Dismiss Keyboard
     document.addEventListener('pointerdown', (e) => {
       const activeEl = document.activeElement;
       if (activeEl && activeEl.tagName === 'INPUT') {
@@ -1899,6 +1913,8 @@
     // ==========================================================================
     // SAVE & RUN PARAMETERS SYNC
     // ==========================================================================
+    
+    // ប៊ូតុង SAVE៖ រក្សាទុកប៉ារ៉ាម៉ែត្រទាំង ៧ ទៅកាន់ Server និង LocalStorage
     btnSaveEa.addEventListener('click', () => {
       if (btnSaveEa.classList.contains('disabled')) return;
 
@@ -1912,6 +1928,7 @@
       btnSaveEa.innerText = "Saving...";
       btnSaveEa.classList.add('disabled');
 
+      // បង្កើត Object រក្សាទុកក្នុង Local Storage
       const settingsParams = { lot, tp, sl, active: eaActive, limit24h: limit24hVal, lowLot: lowLotVal, symbol };
       localStorage.setItem('eaSettingsParams', JSON.stringify(settingsParams));
 
@@ -1933,6 +1950,7 @@
       });
     });
 
+    // មុខងារកែប្រែ UI ទៅតាមស្ថានភាព Running / Stopped
     function updateUIWithActiveState() {
       const statusBadge = document.getElementById('ea-trading-status-badge');
       const spinnerIcon = document.getElementById('ea-spinner-icon');
@@ -1954,6 +1972,7 @@
       }
     }
 
+    // ប៊ូតុង RUN Toggle
     btnRunEa.addEventListener('click', () => {
       const lot = document.getElementById('ea-lot-size').value;
       const tp = document.getElementById('ea-target-tp').value;
@@ -1978,9 +1997,10 @@
       });
     });
 
+    // ចាប់ផ្តើមទាញយកទិន្នន័យពី LocalStorage មុនគេបង្អស់
     loadLocalSettings();
 
-    // Loop Sync 
+    // Loop Sync ទាញយកទិន្នន័យពី Server រៀងរាល់ ២ វិនាទី
     setInterval(() => {
       fetch('/api/status')
       .then(res => res.json())
@@ -1992,24 +2012,32 @@
         document.getElementById('balance-display-value').innerText = `$${balance.toFixed(2)}`;
         document.getElementById('equity-display-value').innerText = `$${equity.toFixed(2)}`;
         
-        // ៤. គណនាផលបូកចំណេញខាតពិតប្រាកដដែលបានបិទរួចក្នុងរយៈពេល ២៤ ម៉ោងពី VPS
-        const closed_tp = parseFloat(data.closed_tp_24h || 0);
-        const closed_sl = parseFloat(data.closed_sl_24h || 0);
-
-        // បង្ហាញលើទំព័រ Balance
-        document.getElementById('tp-display-value').innerText = `+ $${closed_tp.toFixed(2)}`;
-        document.getElementById('sl-display-value').innerText = `- $${closed_sl.toFixed(2)}`;
+        let totalProfit = 0;
+        if (data.positions && data.positions.length > 0) {
+          data.positions.forEach(pos => {
+            totalProfit += parseFloat(pos.profit || 0);
+          });
+        }
         
-        // បង្ហាញលើទំព័រ Date Reports
-        document.getElementById('date-tp-value').innerText = `+$${closed_tp.toFixed(2)}`;
-        document.getElementById('date-sl-value').innerText = `-$${closed_sl.toFixed(2)}`;
+        if (totalProfit >= 0) {
+          document.getElementById('tp-display-value').innerText = `+ $${totalProfit.toFixed(2)}`;
+          document.getElementById('sl-display-value').innerText = `- $0.00`;
+          
+          document.getElementById('date-tp-value').innerText = `+$${totalProfit.toFixed(2)}`;
+          document.getElementById('date-sl-value').innerText = `-$0.00`;
+        } else {
+          document.getElementById('tp-display-value').innerText = `+ $0.00`;
+          document.getElementById('sl-display-value').innerText = `- $${Math.abs(totalProfit).toFixed(2)}`;
+          
+          document.getElementById('date-tp-value').innerText = `+$0.00`;
+          document.getElementById('date-sl-value').innerText = `-$${Math.abs(totalProfit).toFixed(2)}`;
+        }
 
-        // កត់ត្រាទុកចំណេញ/ខាតប្រចាំថ្ងៃស្វ័យប្រវត្តសម្រាប់ប្រតិទិន (ទិន្នន័យចំណេញសរុប = TP - SL)
-        const netProfitToday = closed_tp - closed_sl;
-        if (netProfitToday !== 0) {
+        if (totalProfit !== 0) {
           const todayObj = new Date();
           const todayKey = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
-          dailyHistoryData[todayKey] = { profit: netProfitToday };
+          
+          dailyHistoryData[todayKey] = { profit: totalProfit };
           localStorage.setItem('dailyHistoryData', JSON.stringify(dailyHistoryData));
         }
 
@@ -2042,7 +2070,7 @@
           connectionBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
         }
 
-        // Active Positions Render (រួមទាំងការត្រេដដោយដៃ)
+        // Active Positions Render
         const activeListArea = document.getElementById('active-list-area');
         if (data.positions && data.positions.length > 0) {
           activeListArea.innerHTML = data.positions.map(pos => {
@@ -2063,7 +2091,7 @@
           activeListArea.innerHTML = `<div class="empty-state-text">គ្មានលំដាប់ជួញដូរកំពុងដំណើរការឡើយ</div>`;
         }
 
-        // History Render (រួមទាំងការត្រេដដោយដៃ)
+        // History Render
         const historyListArea = document.getElementById('history-list-area');
         if (data.history && data.history.length > 0) {
           historyListArea.innerHTML = data.history.map(his => {
