@@ -25,7 +25,6 @@
       overflow-x: hidden;
     }
 
-    /* Screen Overlay Simulation for Trading Background behind popup */
     .app-background {
       position: fixed;
       top: 0;
@@ -37,7 +36,6 @@
       z-index: 1;
     }
 
-    /* Bottom Sheet Modal Container */
     .bottom-sheet {
       position: relative;
       z-index: 2;
@@ -51,7 +49,6 @@
       border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* Header centered */
     .header {
       display: flex;
       justify-content: center;
@@ -68,7 +65,6 @@
       text-align: center;
     }
 
-    /* Action Grid (Top 4 Icons) */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -118,7 +114,6 @@
       right: 12px;
     }
 
-    /* Section Headers */
     .section-title {
       font-size: 13.5px;
       color: #6a7180;
@@ -126,7 +121,6 @@
       font-weight: 500;
     }
 
-    /* Checkbox Options Grid */
     .options-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -144,7 +138,6 @@
       user-select: none;
     }
 
-    /* Custom Square Checkbox Style matching original screenshot */
     .checkbox-label input[type="checkbox"] {
       appearance: none;
       -webkit-appearance: none;
@@ -203,7 +196,6 @@
       margin-left: 2px;
     }
 
-    /* Slider Section with Start, Middle, End Stops */
     .slider-section {
       margin-bottom: 30px;
     }
@@ -225,7 +217,6 @@
       border-radius: 1px;
     }
 
-    /* Tick dots at Start, Center, and End */
     .slider-dot {
       position: absolute;
       width: 10px;
@@ -241,7 +232,6 @@
     .slider-dot.middle { left: 50%; }
     .slider-dot.end { right: 0%; transform: translate(0, -50%); }
 
-    /* Interactive Slider Input */
     .range-slider {
       position: absolute;
       width: 100%;
@@ -251,7 +241,6 @@
       z-index: 3;
     }
 
-    /* Custom Handle Thumb Overlay */
     .custom-thumb {
       position: absolute;
       top: 50%;
@@ -276,7 +265,6 @@
       z-index: 1;
     }
 
-    /* List Rows */
     .list-row {
       display: flex;
       justify-content: space-between;
@@ -299,20 +287,14 @@
       color: #ffffff;
     }
 
-    /* ==========================================================================
-       VIEW CONTAINERS (Default view states)
-       ========================================================================== */
     .view-container {
       display: none;
     }
 
     #view-balance {
-      display: block; /* Show Balance Page on load */
+      display: block; 
     }
 
-    /* ==========================================================================
-       BALANCE VIEW STYLES
-       ========================================================================== */
     .balance-boxes {
       display: flex;
       flex-direction: column;
@@ -352,10 +334,8 @@
       font-size: 26px;
       font-weight: 600;
       color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* Deposit & Withdrawal Buttons */
     .balance-actions-group {
       display: flex;
       gap: 8px;
@@ -376,7 +356,7 @@
     }
 
     .btn-deposit {
-      background-color: #00b4d8; /* Ocean Blue */
+      background-color: #00b4d8; 
       color: #ffffff;
     }
 
@@ -386,7 +366,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* SL & TP Row */
     .sl-tp-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -414,9 +393,8 @@
     }
 
     .sl-color { color: #f6465d; }
-    .tp-color { color: #00b4d8; } /* Ocean Blue */
+    .tp-color { color: #00b4d8; } 
 
-    /* MT5 Connection Section */
     .connect-section {
       margin-bottom: 24px;
       display: flex;
@@ -441,7 +419,6 @@
       font-size: 15.5px;
       color: #eaecef;
       font-weight: 600;
-      letter-spacing: 0.1px;
     }
 
     .connect-subtitle {
@@ -466,11 +443,7 @@
       align-items: center;
       justify-content: center;
       padding: 6px;
-      transition: color 0.2s, transform 0.1s;
     }
-
-    .eye-toggle-btn:hover { color: #ffffff; }
-    .eye-toggle-btn:active { transform: scale(0.9); }
 
     .success-badge {
       background-color: rgba(14, 203, 129, 0.15);
@@ -479,8 +452,6 @@
       border-radius: 6px;
       font-size: 12.5px;
       font-weight: 600;
-      letter-spacing: 0.3px;
-      transition: all 0.3s ease;
     }
 
     .read-only-group {
@@ -505,8 +476,6 @@
       border-radius: 10px;
       font-size: 14.5px;
       outline: none;
-      cursor: default;
-      user-select: all;
     }
 
     .copy-field-btn {
@@ -520,12 +489,8 @@
       align-items: center;
       justify-content: center;
       padding: 6px;
-      transition: color 0.2s;
     }
 
-    .copy-field-btn:hover { color: #ffffff; }
-
-    /* Wide Navigation Button */
     .nav-btn-wide {
       width: 100%;
       background-color: transparent;
@@ -536,17 +501,12 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
     }
 
-    .nav-btn-wide:hover { background-color: rgba(255, 255, 255, 0.03); }
-    .nav-btn-wide:active { background-color: rgba(255, 255, 255, 0.08); transform: scale(0.98); }
-
-    /* Disabled submit button state */
     .nav-btn-wide.disabled, .btn-blue-run.disabled, .btn-dark-save.disabled {
       background-color: #1e2026 !important;
       color: #5e6673 !important;
@@ -556,9 +516,6 @@
       pointer-events: none;
     }
 
-    /* ==========================================================================
-       EA TRADING STYLES & GRID
-       ========================================================================== */
     .ea-form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -589,10 +546,7 @@
       border-radius: 10px;
       font-size: 14.5px;
       outline: none;
-      transition: border-color 0.2s;
     }
-
-    .form-input:focus { border-color: #ffffff; }
 
     .tp-input-color { color: #00b4d8 !important; font-weight: 600; }
     .sl-input-color { color: #f6465d !important; font-weight: 600; }
@@ -636,7 +590,6 @@
       z-index: -2;
     }
 
-    /* ផ្អាកការវិលនៅពេលលោត Stopped */
     .ea-icon-border-btn.stopped::before {
       animation-play-state: paused !important;
     }
@@ -651,14 +604,13 @@
     }
 
     .auto-trading-badge {
-      background-color: rgba(14, 203, 129, 0.15);
-      color: #0ecb81;
+      background-color: rgba(246, 70, 93, 0.15); /* ចាប់ផ្តើមជា Stopped (ក្រហម) */
+      color: #f6465d;
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
       white-space: nowrap;
-      transition: all 0.3s ease;
     }
 
     .buttons-row {
@@ -676,10 +628,6 @@
       font-weight: 600;
       cursor: pointer;
       border: none;
-      transition: background-color 0.2s, transform 0.1s;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .btn-dark-save {
@@ -688,14 +636,8 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .btn-dark-save:active { background-color: #2b313a; transform: scale(0.98); }
+    .btn-blue-run { background-color: #f6465d; color: #ffffff; } /* ចាប់ផ្តើមប៊ូតុង Run ជាក្រហម */
 
-    .btn-blue-run { background-color: #00b4d8; color: #ffffff; }
-    .btn-blue-run:active { background-color: #0093b2; transform: scale(0.98); }
-
-    /* ==========================================================================
-       TABS / SECTION BOX STYLES
-       ========================================================================== */
     .tabs-container {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -721,7 +663,6 @@
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
-      transition: color 0.2s, background-color 0.2s;
     }
 
     .tab-btn.active {
@@ -746,7 +687,6 @@
       padding-bottom: 10px;
       border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
       margin-bottom: 12px;
-      letter-spacing: 0.5px;
     }
 
     .table-header-row span { flex: 1; text-align: center; }
@@ -766,14 +706,10 @@
 
     .empty-state-text { text-align: center; color: #5e6673; font-size: 12.5px; padding: 20px 0; }
 
-    /* ==========================================================================
-       DATE VIEW STYLES (Performance Line Chart & Custom Calendar)
-       ========================================================================== */
     #view-date {
       display: none;
     }
 
-    /* Beautiful SVG Line Chart Box */
     .line-chart-box {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -790,7 +726,6 @@
       height: 100%;
     }
 
-    /* Glowing indicator pulse animation */
     @keyframes pulse-glow {
       0% { r: 4px; opacity: 0.3; }
       50% { r: 9px; opacity: 0.9; }
@@ -801,7 +736,6 @@
       animation: pulse-glow 2s infinite ease-in-out;
     }
 
-    /* Calendar Grid */
     .calendar-box {
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -820,7 +754,6 @@
       color: #ffffff;
     }
 
-    /* Clickable Month Navigation Buttons */
     .cal-nav-btn {
       background: none;
       border: none;
@@ -830,11 +763,6 @@
       align-items: center;
       justify-content: center;
       padding: 4px;
-      transition: color 0.2s;
-    }
-
-    .cal-nav-btn:hover {
-      color: #ffffff;
     }
 
     .calendar-weekdays {
@@ -875,36 +803,31 @@
       font-weight: 600;
     }
 
-    /* 2 Dot indicators setup: Red & Ocean Blue */
     .day-num .dot {
       width: 4px;
       height: 4px;
       border-radius: 50%;
       margin-top: 3px;
-      display: none; /* hidden by default */
+      display: none; 
     }
 
     .day-num.red-total .dot {
       display: block;
-      background-color: #f6465d; /* Red */
+      background-color: #f6465d; 
     }
 
     .day-num.blue-total .dot {
       display: block;
-      background-color: #00b4d8; /* Ocean Blue */
+      background-color: #00b4d8; 
     }
 
-    /* text profit on day */
     .day-profit-text {
       font-size: 8px;
       font-weight: bold;
       margin-top: 2px;
     }
 
-    /* ==========================================================================
-       DEPOSIT & WITHDRAWAL FULL VIEW PAGE STYLES
-       ========================================================================== */
-    #view-deposit, #view-withdraw {
+    #view-deposit, #view-withdraw, #view-tx-history {
       display: none;
     }
 
@@ -918,7 +841,6 @@
       background-color: rgba(255, 255, 255, 0.01);
     }
 
-    /* Quick select amount buttons (2x4 Grid) */
     .quick-amounts-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -935,11 +857,10 @@
       font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: border-color 0.2s, background-color 0.2s;
     }
 
     .quick-amt-btn.active {
-      border-color: #00b4d8; /* Ocean Blue outline */
+      border-color: #00b4d8; 
       background-color: rgba(0, 180, 216, 0.05);
     }
   </style>
@@ -968,7 +889,6 @@
           </div>
         </div>
 
-        <!-- បានកែសម្រួលប្រអប់នេះដើម្បីដាក់ប៊ូតុង History នៅខាងស្តាំ -->
         <div class="balance-card" style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div class="balance-card-title">Account Equity</div>
@@ -1192,16 +1112,26 @@
           <input type="text" class="form-input sl-input-color ea-field" id="ea-max-loss" value="5.00">
         </div>
         <div class="ea-form-group ea-auto-align">
-          <div class="ea-icon-border-btn" id="ea-spinner-icon">
+          <div class="ea-icon-border-btn stopped" id="ea-spinner-icon"> <!-- កំណត់ stopped ពីដំបូង -->
             <i data-lucide="cpu" size="18"></i>
           </div>
-          <div class="auto-trading-badge" id="ea-trading-status-badge">Trading Auto</div>
+          <div class="auto-trading-badge" id="ea-trading-status-badge">Trading Stopped</div> <!-- កំណត់ Trading Stopped ពីដំបូង -->
+        </div>
+
+        <!-- ប៊ូតុងសម្រាប់ជ្រើសរើសកាក់ BTC/USD, XAU/USD, AUD/USD ដាក់នៅខាងក្រោម MAX LOSS SL ($) -->
+        <div class="ea-form-group" style="grid-column: span 2; margin-top: 4px;">
+          <span class="ea-input-label">Select Symbol (ជ្រើសរើសកាក់)</span>
+          <select class="form-input ea-field" id="ea-symbol" style="background-color: #1e2026; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); width: 100%; cursor: pointer; font-weight: 600;">
+            <option value="XAU/USD">XAU/USD (Gold)</option>
+            <option value="BTC/USD">BTC/USD (Bitcoin)</option>
+            <option value="AUD/USD">AUD/USD</option>
+          </select>
         </div>
       </div>
 
       <div class="buttons-row">
         <button class="ea-half-btn btn-dark-save disabled" id="btn-save-ea">Save</button>
-        <button class="ea-half-btn btn-blue-run" id="btn-run-ea">Run</button>
+        <button class="ea-half-btn btn-blue-run" id="btn-run-ea">Stopped</button> <!-- កំណត់ជា Stopped ពីដំបូង -->
       </div>
 
       <div class="tabs-container">
@@ -1262,10 +1192,7 @@
           <line x1="0" y1="20" x2="350" y2="20" stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="4" />
           <line x1="0" y1="60" x2="350" y2="60" stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="4" />
           <line x1="0" y1="100" x2="350" y2="100" stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="4" />
-
-          <!-- ខ្សែក្រាហ្វិកចំណេញ/ខាតសរុប (រក្សាជានិច្ច) -->
           <path id="trendPath" d="M 10 60 L 310 60" stroke="#00b4d8" stroke-width="2.5" fill="none" stroke-linecap="round" />
-
           <g>
             <circle cx="310" cy="60" r="7" fill="rgba(0, 180, 216, 0.35)" class="pulse-circle" id="glowingDotBack" />
             <circle cx="310" cy="60" r="3" fill="#00b4d8" id="glowingDotFront" />
@@ -1274,7 +1201,6 @@
       </div>
 
       <div class="sl-tp-row">
-        <!-- ប្តូរទៅជា Total SL 24/h និង Total TP 24/h តាមតម្រូវការ -->
         <div class="sl-tp-card">
           <div class="sl-tp-title">Total SL 24/h</div>
           <div class="sl-tp-value sl-color" id="date-sl-value">-$0.00</div>
@@ -1291,9 +1217,7 @@
           <button class="cal-nav-btn" id="btn-prev-month">
             <i data-lucide="chevron-left" size="18"></i>
           </button>
-          
           <span id="calendar-month-title"></span>
-          
           <button class="cal-nav-btn" id="btn-next-month">
             <i data-lucide="chevron-right" size="18"></i>
           </button>
@@ -1323,12 +1247,10 @@
           <span class="ea-input-label">Amount (ចំនួនទឹកប្រាក់)</span>
           <input type="number" class="form-input" id="deposit-amount" placeholder="Enter amount ($)" required>
         </div>
-
         <div class="ea-form-group">
           <span class="ea-input-label">UID BOBOTOU.io</span>
           <input type="text" class="form-input" id="deposit-uid" placeholder="Enter UID" required>
         </div>
-
         <div class="ea-form-group">
           <span class="ea-input-label">Account BOBOTOU:</span>
           <input type="text" class="form-input" id="deposit-account" placeholder="វាយបញ្ចូលឈ្មោះអាខោន" required>
@@ -1338,7 +1260,6 @@
       <button class="nav-btn-wide btn-blue-run disabled" id="btn-submit-deposit" style="margin-bottom: 12px;">
         បង់ប្រាក់
       </button>
-
       <button class="nav-btn-wide" id="btn-deposit-back">
         <i data-lucide="arrow-left" size="16"></i> Back to Balance
       </button>
@@ -1368,12 +1289,10 @@
           <span class="ea-input-label">Amount (ចំនួនទឹកប្រាក់)</span>
           <input type="number" class="form-input" id="withdraw-amount" placeholder="Enter amount ($)" required>
         </div>
-
         <div class="ea-form-group">
           <span class="ea-input-label">UID BOBOTOU.io</span>
           <input type="text" class="form-input" id="withdraw-uid" placeholder="Enter UID" required>
         </div>
-
         <div class="ea-form-group">
           <span class="ea-input-label">Account BOBOTOU:</span>
           <input type="text" class="form-input" id="withdraw-account" placeholder="វាយបញ្ចូលឈ្មោះអាខោន" required>
@@ -1383,24 +1302,20 @@
       <button class="nav-btn-wide btn-blue-run disabled" id="btn-submit-withdraw" style="margin-bottom: 12px;">
         ដកប្រាក់
       </button>
-
       <button class="nav-btn-wide" id="btn-withdraw-back">
         <i data-lucide="arrow-left" size="16"></i> Back to Balance
       </button>
     </div>
 
 
-    <!-- 7. TRANSACTION HISTORY VIEW (ទំព័រប្រវត្តិនៃការដាក់/ដកប្រាក់ថ្មី) -->
+    <!-- 7. TRANSACTION HISTORY VIEW -->
     <div id="view-tx-history" class="view-container">
       <div class="header">
         <h2>Transaction History</h2>
       </div>
-
-      <!-- បញ្ជីប្រតិបត្តិការ ឬរូបតំណាងករណីគ្មានប្រតិបត្តិការ -->
-      <div id="tx-history-list" style="margin-bottom: 24px; min-height: 220px; max-height: 380px; overflow-y: auto; padding-right: 4px;">
+      <div id="tx-history-list" style="margin-bottom: 24px; min-height: 220px; max-height: 380px; overflow-y: auto;">
         <!-- ទិន្នន័យត្រូវបានបង្កើតដោយ Dynamic JavaScript -->
       </div>
-
       <button class="nav-btn-wide" id="btn-tx-history-back">
         <i data-lucide="arrow-left" size="16"></i> Back to Balance
       </button>
@@ -1432,7 +1347,7 @@
     const viewDate = document.getElementById('view-date');
     const viewDeposit = document.getElementById('view-deposit');
     const viewWithdraw = document.getElementById('view-withdraw');
-    const viewTxHistory = document.getElementById('view-tx-history'); // បន្ថែម View ប្រវត្តិ
+    const viewTxHistory = document.getElementById('view-tx-history');
 
     // Navigation Buttons
     const btnGotoChartSettings = document.getElementById('btn-goto-chart-settings');
@@ -1456,36 +1371,50 @@
     const btnSaveEa = document.getElementById('btn-save-ea');
     const btnRunEa = document.getElementById('btn-run-ea');
 
-    // Input Elements (Deposit)
+    // Inputs
     const btnSubmitDeposit = document.getElementById('btn-submit-deposit');
     const depositAmount = document.getElementById('deposit-amount');
     const depositUid = document.getElementById('deposit-uid');
     const depositAccount = document.getElementById('deposit-account');
 
-    // Input Elements (Withdrawal)
     const btnSubmitWithdraw = document.getElementById('btn-submit-withdraw');
     const withdrawAmount = document.getElementById('withdraw-amount');
     const withdrawUid = document.getElementById('withdraw-uid');
     const withdrawAccount = document.getElementById('withdraw-account');
     const quickAmtBtns = document.querySelectorAll('.quick-amt-btn');
 
-    // EA Fields (For dynamic Lot Size / Parameters validation)
+    // EA Fields 
     const eaFields = document.querySelectorAll('.ea-field');
+    const eaSymbolSelect = document.getElementById('ea-symbol');
 
     // Global Values State
     let accountBalanceLimit = 0.00;
-    let eaActive = 1; 
+    let eaActive = 0; // កំណត់ត្រឹម 0 (Stopped) ជាតម្លៃលំនាំដើមនៃការចាប់ផ្តើមដំបូង
     let limit24hVal = 0.50;
     let lowLotVal = 0.30;
-    let pendingTxExist = false; // ស្ថានភាពជាប់ Pending
+    let pendingTxExist = false; 
 
-    // ប្រព័ន្ធចងចាំទិន្នន័យចំណេញប្រចាំថ្ងៃ (Persisted Daily Profit/Loss Storage)
+    // ទាញយកទិន្នន័យពី LocalStorage ដើម្បីកុំឱ្យបាត់បង់ទិន្នន័យពេលបិទម៉ាស៊ីន/App
     let dailyHistoryData = JSON.parse(localStorage.getItem('dailyHistoryData')) || {};
 
-    // Calendar navigation state variables
     let navDate = new Date();
     let displayYear = navDate.getFullYear();
     let displayMonth = navDate.getMonth();
+
+    // មុខងារផ្ទុកប៉ារ៉ាម៉ែត្រចាស់ពី LocalStorage មកលើ UI ភ្លាមៗមុនពេលទិន្នន័យ Server មកដល់
+    function loadLocalSettings() {
+      const localParams = JSON.parse(localStorage.getItem('eaSettingsParams'));
+      if (localParams) {
+        document.getElementById('ea-lot-size').value = localParams.lot || '0.01';
+        document.getElementById('ea-target-tp').value = localParams.tp || '0.65';
+        document.getElementById('ea-max-loss').value = localParams.sl || '5.00';
+        document.getElementById('limit-input').value = `$${parseFloat(localParams.limit24h || 0.50).toFixed(2)}`;
+        document.getElementById('ea-low-lot').value = localParams.lowLot || '0.30';
+        eaSymbolSelect.value = localParams.symbol || 'XAU/USD';
+        eaActive = parseInt(localParams.active || 0);
+        updateUIWithActiveState();
+      }
+    }
 
     btnGotoChartSettings.addEventListener('click', () => {
       viewBalance.style.display = 'none';
@@ -1541,7 +1470,6 @@
       viewBalance.style.display = 'block';
     });
 
-    // ព្រឹត្តិការណ៍ចុចបើកទំព័រ History
     btnTxHistory.addEventListener('click', () => {
       viewBalance.style.display = 'none';
       viewTxHistory.style.display = 'block';
@@ -1634,7 +1562,6 @@
       });
     });
 
-    // ផ្ញើប្រតិបត្តិការដាក់ប្រាក់ទៅកាន់ Server (ជំនួសការផ្ញើផ្ទាល់ទៅតេឡេក្រាម)
     btnSubmitDeposit.addEventListener('click', () => {
       if (btnSubmitDeposit.classList.contains('disabled') || pendingTxExist) return;
 
@@ -1678,7 +1605,6 @@
       });
     });
 
-    // ផ្ញើប្រតិបត្តិការដកប្រាក់ទៅកាន់ Server
     btnSubmitWithdraw.addEventListener('click', () => {
       if (btnSubmitWithdraw.classList.contains('disabled') || pendingTxExist) return;
 
@@ -1723,12 +1649,10 @@
       });
     });
 
-    // មុខងារទាញយក និងបង្ហាញប្រតិបត្តិការដាក់/ដកប្រាក់
     function fetchTransactions() {
       fetch('/api/transactions')
       .then(res => res.json())
       .then(txs => {
-        // ពិនិត្យស្ថានភាព Pending
         pendingTxExist = txs.some(t => t.status === 'Pending');
 
         const txHistoryList = document.getElementById('tx-history-list');
@@ -1748,7 +1672,7 @@
             return `
               <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 14px 16px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                  <div style="font-size: 14px; font-weight: 600; color: #ffffff;">${tx.type === 'Deposit' ? 'Deposit' : 'Withdrawal'} - $${parseFloat(tx.amount).toFixed(2)}</div>
+                  <div style="font-size: 14px; font-weight: 600; color: #ffffff;">${tx.type} - $${parseFloat(tx.amount).toFixed(2)}</div>
                   <div style="font-size: 11px; color: #848e9c; margin-top: 4px;">UID: ${tx.uid} | ${tx.date} ${tx.time}</div>
                 </div>
                 <span style="padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background-color: ${statusColor}; color: ${statusTextColor};">${tx.status}</span>
@@ -1756,7 +1680,6 @@
             `;
           }).join('');
         } else {
-          // បង្ហាញរូប SVG ករណីគ្មានប្រតិបត្តិការឡើយ
           txHistoryList.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; color: #5e6673;">
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; opacity: 0.5;">
@@ -1768,7 +1691,6 @@
           `;
         }
 
-        // ធ្វើបច្ចុប្បន្នភាពប៊ូតុងភ្លាមៗ
         if (viewDeposit.style.display === 'block') validateDepositForm();
         if (viewWithdraw.style.display === 'block') validateWithdrawForm();
       })
@@ -1783,7 +1705,6 @@
       }
     });
 
-    // Mask/Unmask System
     const btnEyeToggle = document.getElementById('btn-eye-toggle');
     const mt5Server = document.getElementById('mt5-server');
     const mt5Id = document.getElementById('mt5-id');
@@ -1839,7 +1760,7 @@
     updateFieldsVisibility();
 
     // ==========================================================================
-    // DYNAMIC CALENDAR GENERATOR
+    // DATE REPORT CALENDAR
     // ==========================================================================
     function renderCalendar() {
       const today = new Date();
@@ -1918,7 +1839,7 @@
     });
 
     // ==========================================================================
-    // INTERACTIVE TABS LOGIC
+    // TABS LOGIC
     // ==========================================================================
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabPanels = document.querySelectorAll('.tab-panel');
@@ -1937,7 +1858,7 @@
     });
 
     // ==========================================================================
-    // DYNAMIC TREND LINE CHART PLOTTING
+    // DYNAMIC TREND LINE CHART
     // ==========================================================================
     function updateTrendChart() {
       const sortedKeys = Object.keys(dailyHistoryData).sort();
@@ -1990,8 +1911,10 @@
     }
 
     // ==========================================================================
-    // PORT CONNECTION SYNC LOOP
+    // SAVE & RUN PARAMETERS SYNC
     // ==========================================================================
+    
+    // ប៊ូតុង SAVE៖ រក្សាទុកប៉ារ៉ាម៉ែត្រទាំង ៧ ទៅកាន់ Server និង LocalStorage
     btnSaveEa.addEventListener('click', () => {
       if (btnSaveEa.classList.contains('disabled')) return;
 
@@ -2000,19 +1923,19 @@
       const sl = document.getElementById('ea-max-loss').value;
       limit24hVal = parseFloat(document.getElementById('limit-input').value.replace('$', '')) || 0.50;
       lowLotVal = parseFloat(document.getElementById('ea-low-lot').value) || 0.30;
+      const symbol = eaSymbolSelect.value;
 
       btnSaveEa.innerText = "Saving...";
       btnSaveEa.classList.add('disabled');
 
+      // បង្កើត Object រក្សាទុកក្នុង Local Storage
+      const settingsParams = { lot, tp, sl, active: eaActive, limit24h: limit24hVal, lowLot: lowLotVal, symbol };
+      localStorage.setItem('eaSettingsParams', JSON.stringify(settingsParams));
+
       fetch('/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          lot, tp, sl, 
-          active: eaActive, 
-          limit24h: limit24hVal, 
-          lowLot: lowLotVal 
-        })
+        body: JSON.stringify(settingsParams)
       })
       .then(res => res.text())
       .then(() => {
@@ -2027,44 +1950,57 @@
       });
     });
 
-    btnRunEa.addEventListener('click', () => {
-      const lot = document.getElementById('ea-lot-size').value;
-      const tp = document.getElementById('ea-target-tp').value;
-      const sl = document.getElementById('ea-max-loss').value;
+    // មុខងារកែប្រែ UI ទៅតាមស្ថានភាព Running / Stopped
+    function updateUIWithActiveState() {
       const statusBadge = document.getElementById('ea-trading-status-badge');
       const spinnerIcon = document.getElementById('ea-spinner-icon');
 
       if (eaActive === 1) {
-        eaActive = 0;
-        btnRunEa.innerText = "Stopped";
-        btnRunEa.style.backgroundColor = "#f6465d"; 
-        statusBadge.innerText = "Trading Stopped";
-        statusBadge.style.color = "#f6465d";
-        statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
-        spinnerIcon.classList.add('stopped'); 
-      } else {
-        eaActive = 1;
         btnRunEa.innerText = "Run";
         btnRunEa.style.backgroundColor = "#00b4d8"; 
         statusBadge.innerText = "Trading Auto";
         statusBadge.style.color = "#0ecb81";
         statusBadge.style.backgroundColor = "rgba(14, 203, 129, 0.15)";
         spinnerIcon.classList.remove('stopped'); 
+      } else {
+        btnRunEa.innerText = "Stopped";
+        btnRunEa.style.backgroundColor = "#f6465d"; 
+        statusBadge.innerText = "Trading Stopped";
+        statusBadge.style.color = "#f6465d";
+        statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
+        spinnerIcon.classList.add('stopped'); 
       }
+    }
+
+    // ប៊ូតុង RUN Toggle
+    btnRunEa.addEventListener('click', () => {
+      const lot = document.getElementById('ea-lot-size').value;
+      const tp = document.getElementById('ea-target-tp').value;
+      const sl = document.getElementById('ea-max-loss').value;
+      const symbol = eaSymbolSelect.value;
+
+      if (eaActive === 1) {
+        eaActive = 0;
+      } else {
+        eaActive = 1;
+      }
+
+      updateUIWithActiveState();
+
+      const settingsParams = { lot, tp, sl, active: eaActive, limit24h: limit24hVal, lowLot: lowLotVal, symbol };
+      localStorage.setItem('eaSettingsParams', JSON.stringify(settingsParams));
 
       fetch('/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          lot, tp, sl, 
-          active: eaActive, 
-          limit24h: limit24hVal, 
-          lowLot: lowLotVal 
-        })
+        body: JSON.stringify(settingsParams)
       });
     });
 
-    // Sync loop រៀងរាល់ ២ វិនាទី
+    // ចាប់ផ្តើមទាញយកទិន្នន័យពី LocalStorage មុនគេបង្អស់
+    loadLocalSettings();
+
+    // Loop Sync ទាញយកទិន្នន័យពី Server រៀងរាល់ ២ វិនាទី
     setInterval(() => {
       fetch('/api/status')
       .then(res => res.json())
@@ -2100,14 +2036,13 @@
         if (totalProfit !== 0) {
           const todayObj = new Date();
           const todayKey = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
+          
           dailyHistoryData[todayKey] = { profit: totalProfit };
           localStorage.setItem('dailyHistoryData', JSON.stringify(dailyHistoryData));
         }
 
         const diff = data.serverTime - data.lastPing;
         const connectionBadge = document.getElementById('vps-connection-badge');
-        const statusBadge = document.getElementById('ea-trading-status-badge');
-        const spinnerIcon = document.getElementById('ea-spinner-icon');
 
         if (data.lastPing === 0) {
           connectionBadge.innerText = "Connecting...";
@@ -2126,12 +2061,7 @@
             
             if (sumProfit24h >= limit24hVal) {
               eaActive = 0;
-              btnRunEa.innerText = "Stopped";
-              btnRunEa.style.backgroundColor = "#f6465d"; 
-              statusBadge.innerText = "Trading Stopped";
-              statusBadge.style.color = "#f6465d";
-              statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
-              spinnerIcon.classList.add('stopped'); 
+              updateUIWithActiveState();
             }
           }
         } else {
@@ -2190,7 +2120,6 @@
       })
       .catch(err => console.log("Sync failed: ", err));
 
-      // ហៅមុខងារទាញយកប្រតិបត្តិការដាក់/ដកប្រាក់រៀងរាល់ ២ វិនាទី
       fetchTransactions();
     }, 2000);
   </script>
