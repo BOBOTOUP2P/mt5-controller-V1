@@ -968,9 +968,15 @@
           </div>
         </div>
 
-        <div class="balance-card">
-          <div class="balance-card-title">Account Equity</div>
-          <div class="balance-card-value tp-color" id="equity-display-value">$0.00</div>
+        <!-- បានកែសម្រួលប្រអប់នេះដើម្បីដាក់ប៊ូតុង History នៅខាងស្តាំ -->
+        <div class="balance-card" style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div class="balance-card-title">Account Equity</div>
+            <div class="balance-card-value tp-color" id="equity-display-value">$0.00</div>
+          </div>
+          <button class="balance-btn btn-withdraw" id="btn-tx-history" style="margin: 0; padding: 6px 12px; display: flex; align-items: center; gap: 4px;">
+            <i data-lucide="history" size="14"></i> History
+          </button>
         </div>
       </div>
 
@@ -1383,6 +1389,23 @@
       </button>
     </div>
 
+
+    <!-- 7. TRANSACTION HISTORY VIEW (ទំព័រប្រវត្តិនៃការដាក់/ដកប្រាក់ថ្មី) -->
+    <div id="view-tx-history" class="view-container">
+      <div class="header">
+        <h2>Transaction History</h2>
+      </div>
+
+      <!-- បញ្ជីប្រតិបត្តិការ ឬរូបតំណាងករណីគ្មានប្រតិបត្តិការ -->
+      <div id="tx-history-list" style="margin-bottom: 24px; min-height: 220px; max-height: 380px; overflow-y: auto; padding-right: 4px;">
+        <!-- ទិន្នន័យត្រូវបានបង្កើតដោយ Dynamic JavaScript -->
+      </div>
+
+      <button class="nav-btn-wide" id="btn-tx-history-back">
+        <i data-lucide="arrow-left" size="16"></i> Back to Balance
+      </button>
+    </div>
+
   </div>
 
   <script>
@@ -1409,6 +1432,7 @@
     const viewDate = document.getElementById('view-date');
     const viewDeposit = document.getElementById('view-deposit');
     const viewWithdraw = document.getElementById('view-withdraw');
+    const viewTxHistory = document.getElementById('view-tx-history'); // បន្ថែម View ប្រវត្តិ
 
     // Navigation Buttons
     const btnGotoChartSettings = document.getElementById('btn-goto-chart-settings');
@@ -1423,6 +1447,10 @@
     const btnDepositBack = document.getElementById('btn-deposit-back');
     const btnWithdraw = document.querySelector('.btn-withdraw');
     const btnWithdrawBack = document.getElementById('btn-withdraw-back');
+
+    // History Navigations
+    const btnTxHistory = document.getElementById('btn-tx-history');
+    const btnTxHistoryBack = document.getElementById('btn-tx-history-back');
 
     // Save and Run Action Buttons
     const btnSaveEa = document.getElementById('btn-save-ea');
@@ -1449,6 +1477,7 @@
     let eaActive = 1; 
     let limit24hVal = 0.50;
     let lowLotVal = 0.30;
+    let pendingTxExist = false; // ស្ថានភាពជាប់ Pending
 
     // ប្រព័ន្ធចងចាំទិន្នន័យចំណេញប្រចាំថ្ងៃ (Persisted Daily Profit/Loss Storage)
     let dailyHistoryData = JSON.parse(localStorage.getItem('dailyHistoryData')) || {};
@@ -1512,6 +1541,18 @@
       viewBalance.style.display = 'block';
     });
 
+    // ព្រឹត្តិការណ៍ចុចបើកទំព័រ History
+    btnTxHistory.addEventListener('click', () => {
+      viewBalance.style.display = 'none';
+      viewTxHistory.style.display = 'block';
+      fetchTransactions();
+    });
+
+    btnTxHistoryBack.addEventListener('click', () => {
+      viewTxHistory.style.display = 'none';
+      viewBalance.style.display = 'block';
+    });
+
     // Dismiss Keyboard
     document.addEventListener('pointerdown', (e) => {
       const activeEl = document.activeElement;
@@ -1538,21 +1579,38 @@
     validateEaForm();
 
     function validateDepositForm() {
+      if (pendingTxExist) {
+        btnSubmitDeposit.classList.add('disabled');
+        btnSubmitDeposit.innerText = 'រង់ចាំការអនុញ្ញាត...';
+        return;
+      }
       const amountVal = depositAmount.value.trim();
       const uidVal = depositUid.value.trim();
       const accountVal = depositAccount.value.trim();
-      if (amountVal && uidVal && accountVal) btnSubmitDeposit.classList.remove('disabled');
-      else btnSubmitDeposit.classList.add('disabled');
+      if (amountVal && uidVal && accountVal) {
+        btnSubmitDeposit.classList.remove('disabled');
+        btnSubmitDeposit.innerText = 'បង់ប្រាក់';
+      } else {
+        btnSubmitDeposit.classList.add('disabled');
+        btnSubmitDeposit.innerText = 'បង់ប្រាក់';
+      }
     }
 
     function validateWithdrawForm() {
+      if (pendingTxExist) {
+        btnSubmitWithdraw.classList.add('disabled');
+        btnSubmitWithdraw.innerText = 'រង់ចាំការអនុញ្ញាត...';
+        return;
+      }
       const amountVal = parseFloat(withdrawAmount.value);
       const uidVal = withdrawUid.value.trim();
       const accountVal = withdrawAccount.value.trim();
       if (amountVal > 0 && uidVal && accountVal && amountVal <= accountBalanceLimit) {
         btnSubmitWithdraw.classList.remove('disabled');
+        btnSubmitWithdraw.innerText = 'ដកប្រាក់';
       } else {
         btnSubmitWithdraw.classList.add('disabled');
+        btnSubmitWithdraw.innerText = 'ដកប្រាក់';
       }
     }
 
@@ -1576,27 +1634,26 @@
       });
     });
 
-    // Telegram Bot Requests
-    const mt5LoginIdString = "414063265";
-    const botToken = '7295193744:AAGNc-XF990pHZV0nEccNT_zw62s2ZHIAYc';
-    const chatId = '1713583492';
-    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
+    // ផ្ញើប្រតិបត្តិការដាក់ប្រាក់ទៅកាន់ Server (ជំនួសការផ្ញើផ្ទាល់ទៅតេឡេក្រាម)
     btnSubmitDeposit.addEventListener('click', () => {
-      if (btnSubmitDeposit.classList.contains('disabled')) return;
+      if (btnSubmitDeposit.classList.contains('disabled') || pendingTxExist) return;
 
       const amount = depositAmount.value;
       const uid = depositUid.value;
       const accountName = depositAccount.value;
-      const messageText = `🔔 Deposit Request 🔔\n\n🔑 Login ID: ${mt5LoginIdString}\n💵 Amount: $${amount}\n🆔 UID BOBOTOU.io: ${uid}\n👤 Account BOBOTOU: ${accountName}`;
 
       btnSubmitDeposit.disabled = true;
       btnSubmitDeposit.innerText = 'Processing...';
 
-      fetch(telegramUrl, {
+      fetch('/api/transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: messageText })
+        body: JSON.stringify({
+          type: 'Deposit',
+          amount,
+          uid,
+          account: accountName
+        })
       })
       .then(response => {
         if (response.ok) {
@@ -1606,12 +1663,13 @@
           depositAccount.value = '';
           viewDeposit.style.display = 'none';
           viewBalance.style.display = 'block';
+          fetchTransactions();
         } else {
           alert('ការផ្ញើបានបរាជ័យ សូមព្យាយាមម្តងទៀត។');
         }
       })
       .catch(error => {
-        console.error('Error sending message:', error);
+        console.error('Error:', error);
         alert('មានបញ្ហាប្រព័ន្ធ។ សូមព្យាយាមម្តងទៀត។');
       })
       .finally(() => {
@@ -1620,21 +1678,26 @@
       });
     });
 
+    // ផ្ញើប្រតិបត្តិការដកប្រាក់ទៅកាន់ Server
     btnSubmitWithdraw.addEventListener('click', () => {
-      if (btnSubmitWithdraw.classList.contains('disabled')) return;
+      if (btnSubmitWithdraw.classList.contains('disabled') || pendingTxExist) return;
 
       const amount = withdrawAmount.value;
       const uid = withdrawUid.value;
       const accountName = withdrawAccount.value;
-      const messageText = `🔔 Withdrawal Request 🔔\n\n🔑 Login ID: ${mt5LoginIdString}\n💵 Amount: $${amount}\n🆔 UID BOBOTOU.io: ${uid}\n👤 Account BOBOTOU: ${accountName}`;
 
       btnSubmitWithdraw.disabled = true;
       btnSubmitWithdraw.innerText = 'Processing...';
 
-      fetch(telegramUrl, {
+      fetch('/api/transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: messageText })
+        body: JSON.stringify({
+          type: 'Withdrawal',
+          amount,
+          uid,
+          account: accountName
+        })
       })
       .then(response => {
         if (response.ok) {
@@ -1645,12 +1708,13 @@
           quickAmtBtns.forEach(b => b.classList.remove('active'));
           viewWithdraw.style.display = 'none';
           viewBalance.style.display = 'block';
+          fetchTransactions();
         } else {
           alert('ការផ្ញើបានបរាជ័យ សូមព្យាយាមម្តងទៀត។');
         }
       })
       .catch(error => {
-        console.error('Error sending message:', error);
+        console.error('Error:', error);
         alert('មានបញ្ហាប្រព័ន្ធ។ សូមព្យាយាមម្តងទៀត។');
       })
       .finally(() => {
@@ -1658,6 +1722,58 @@
         btnSubmitWithdraw.innerText = 'ដកប្រាក់';
       });
     });
+
+    // មុខងារទាញយក និងបង្ហាញប្រតិបត្តិការដាក់/ដកប្រាក់
+    function fetchTransactions() {
+      fetch('/api/transactions')
+      .then(res => res.json())
+      .then(txs => {
+        // ពិនិត្យស្ថានភាព Pending
+        pendingTxExist = txs.some(t => t.status === 'Pending');
+
+        const txHistoryList = document.getElementById('tx-history-list');
+        if (txs.length > 0) {
+          txHistoryList.innerHTML = txs.map(tx => {
+            let statusColor = 'rgba(255, 177, 26, 0.15)';
+            let statusTextColor = '#ffb11a';
+            
+            if (tx.status === 'Success') {
+              statusColor = 'rgba(14, 203, 129, 0.15)';
+              statusTextColor = '#0ecb81';
+            } else if (tx.status === 'Refusal') {
+              statusColor = 'rgba(246, 70, 93, 0.15)';
+              statusTextColor = '#f6465d';
+            }
+
+            return `
+              <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 14px 16px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 14px; font-weight: 600; color: #ffffff;">${tx.type === 'Deposit' ? 'Deposit' : 'Withdrawal'} - $${parseFloat(tx.amount).toFixed(2)}</div>
+                  <div style="font-size: 11px; color: #848e9c; margin-top: 4px;">UID: ${tx.uid} | ${tx.date} ${tx.time}</div>
+                </div>
+                <span style="padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background-color: ${statusColor}; color: ${statusTextColor};">${tx.status}</span>
+              </div>
+            `;
+          }).join('');
+        } else {
+          // បង្ហាញរូប SVG ករណីគ្មានប្រតិបត្តិការឡើយ
+          txHistoryList.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; color: #5e6673;">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; opacity: 0.5;">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <p style="font-size: 14.5px; font-weight: 500;">គ្មានប្រតិបត្តិការណាមួយឡើយ</p>
+            </div>
+          `;
+        }
+
+        // ធ្វើបច្ចុប្បន្នភាពប៊ូតុងភ្លាមៗ
+        if (viewDeposit.style.display === 'block') validateDepositForm();
+        if (viewWithdraw.style.display === 'block') validateWithdrawForm();
+      })
+      .catch(err => console.error("Error fetching transactions:", err));
+    }
 
     const limitInput = document.getElementById('limit-input');
     limitInput.addEventListener('input', () => {
@@ -1723,7 +1839,7 @@
     updateFieldsVisibility();
 
     // ==========================================================================
-    // DYNAMIC CALENDAR GENERATOR (With Dot Indicators & Text Value Display)
+    // DYNAMIC CALENDAR GENERATOR
     // ==========================================================================
     function renderCalendar() {
       const today = new Date();
@@ -1759,20 +1875,19 @@
           span.classList.add('current');
         }
 
-        // ទាញយកទិន្នន័យប្រចាំថ្ងៃដែលបានរក្សាទុក (ឧទាហរណ៍៖ "2026-07-31")
         const dateKey = `${displayYear}-${String(displayMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
         const dayRecord = dailyHistoryData[dateKey];
 
         if (dayRecord) {
           const totalProfitValue = parseFloat(dayRecord.profit || 0);
           if (totalProfitValue > 0) {
-            span.classList.add('blue-total'); // លោតចំនុចពណ៌ខៀវ
+            span.classList.add('blue-total'); 
             const profitText = document.createElement('div');
             profitText.className = 'day-profit-text tp-color';
             profitText.innerText = `+$${totalProfitValue.toFixed(2)}`;
             span.appendChild(profitText);
           } else if (totalProfitValue < 0) {
-            span.classList.add('red-total'); // លោតចំនុចពណ៌ក្រហម
+            span.classList.add('red-total'); 
             const lossText = document.createElement('div');
             lossText.className = 'day-profit-text sl-color';
             lossText.innerText = `-$${Math.abs(totalProfitValue).toFixed(2)}`;
@@ -1837,7 +1952,6 @@
         return;
       }
 
-      // រៀបចំគូសខ្សែក្រាហ្វិកពីទិន្នន័យចំណេញសរុប (Cumulative Profit Flow)
       let currentCumulative = 0;
       let points = [];
       const startX = 10;
@@ -1847,27 +1961,23 @@
       sortedKeys.forEach((key, index) => {
         currentCumulative += parseFloat(dailyHistoryData[key].profit || 0);
         
-        // គណនាចំណុច Y (កណ្តាល = 60, ចំណេញឡើងទៅលើ, ខាតចុះក្រោម)
-        let y = 60 - (currentCumulative * 5); // 1$ = 5px
-        if (y < 10) y = 10; // បង្ការការហៀរក្រាហ្វិកលើ
-        if (y > 110) y = 110; // បង្ការការហៀរក្រាហ្វិកក្រោម
+        let y = 60 - (currentCumulative * 5); 
+        if (y < 10) y = 10; 
+        if (y > 110) y = 110; 
 
         points.push({ x: startX + (index * stepX), y: y });
       });
 
-      // គូរខ្សែ Path ថ្មី
       let dAttr = `M ${points[0].x} ${points[0].y}`;
       for (let i = 1; i < points.length; i++) {
         dAttr += ` L ${points[i].x} ${points[i].y}`;
       }
       pathEl.setAttribute('d', dAttr);
 
-      // កំណត់ចំនុចបញ្ចេញពន្លឺចុងក្រោយគេបង្អស់ (Last Pulse Point)
       const lastPoint = points[points.length - 1];
       dotBack.setAttribute('cx', lastPoint.x); dotBack.setAttribute('cy', lastPoint.y);
       dotFront.setAttribute('cx', lastPoint.x); dotFront.setAttribute('cy', lastPoint.y);
 
-      // ប្តូរពណ៌ទៅតាមលទ្ធផល (ចំណេញ = ពណ៌ខៀវ, ខាត = ពណ៌ក្រហម)
       if (currentCumulative >= 0) {
         pathEl.setAttribute('stroke', '#00b4d8');
         dotBack.setAttribute('fill', 'rgba(0, 180, 216, 0.35)');
@@ -1882,8 +1992,6 @@
     // ==========================================================================
     // PORT CONNECTION SYNC LOOP
     // ==========================================================================
-    
-    // បញ្ជូនការកំណត់ថ្មីទៅកាន់ Server
     btnSaveEa.addEventListener('click', () => {
       if (btnSaveEa.classList.contains('disabled')) return;
 
@@ -1919,7 +2027,6 @@
       });
     });
 
-    // ប៊ូតុង RUN Toggle
     btnRunEa.addEventListener('click', () => {
       const lot = document.getElementById('ea-lot-size').value;
       const tp = document.getElementById('ea-target-tp').value;
@@ -1934,7 +2041,7 @@
         statusBadge.innerText = "Trading Stopped";
         statusBadge.style.color = "#f6465d";
         statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
-        spinnerIcon.classList.add('stopped'); // បញ្ឈប់ការវិលរបស់រង្វង់មូល
+        spinnerIcon.classList.add('stopped'); 
       } else {
         eaActive = 1;
         btnRunEa.innerText = "Run";
@@ -1942,7 +2049,7 @@
         statusBadge.innerText = "Trading Auto";
         statusBadge.style.color = "#0ecb81";
         statusBadge.style.backgroundColor = "rgba(14, 203, 129, 0.15)";
-        spinnerIcon.classList.remove('stopped'); // ចាប់ផ្តើមវិលជាធម្មតា
+        spinnerIcon.classList.remove('stopped'); 
       }
 
       fetch('/save', {
@@ -1957,7 +2064,7 @@
       });
     });
 
-    // Loop Sync ទាញយកទិន្នន័យពី Server រៀងរាល់ ២ វិនាទី
+    // Sync loop រៀងរាល់ ២ វិនាទី
     setInterval(() => {
       fetch('/api/status')
       .then(res => res.json())
@@ -1969,7 +2076,6 @@
         document.getElementById('balance-display-value').innerText = `$${balance.toFixed(2)}`;
         document.getElementById('equity-display-value').innerText = `$${equity.toFixed(2)}`;
         
-        // គណនាប្រាក់ចំណេញ/ខាតសរុប (SL & TP) ពី Positions កំពុងរត់
         let totalProfit = 0;
         if (data.positions && data.positions.length > 0) {
           data.positions.forEach(pos => {
@@ -1981,7 +2087,6 @@
           document.getElementById('tp-display-value').innerText = `+ $${totalProfit.toFixed(2)}`;
           document.getElementById('sl-display-value').innerText = `- $0.00`;
           
-          // បង្ហាញលើទំព័រ Date Reports ស្វែងរក Total SL 24h & Total TP 24h
           document.getElementById('date-tp-value').innerText = `+$${totalProfit.toFixed(2)}`;
           document.getElementById('date-sl-value').innerText = `-$0.00`;
         } else {
@@ -1992,17 +2097,13 @@
           document.getElementById('date-sl-value').innerText = `-$${Math.abs(totalProfit).toFixed(2)}`;
         }
 
-        // ការរក្សាទុកទិន្នន័យចូលប្រចាំថ្ងៃស្វ័យប្រវត្ត (Daily Auto Logger)
         if (totalProfit !== 0) {
           const todayObj = new Date();
           const todayKey = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
-          
-          // កត់ត្រាទុកក្នុង Browser Memory
           dailyHistoryData[todayKey] = { profit: totalProfit };
           localStorage.setItem('dailyHistoryData', JSON.stringify(dailyHistoryData));
         }
 
-        // ការបង្ហាញ VPS Connection Badge
         const diff = data.serverTime - data.lastPing;
         const connectionBadge = document.getElementById('vps-connection-badge');
         const statusBadge = document.getElementById('ea-trading-status-badge');
@@ -2017,7 +2118,6 @@
           connectionBadge.style.color = "#0ecb81";
           connectionBadge.style.backgroundColor = "rgba(14, 203, 129, 0.15)";
           
-          // ប្រសិនបើគ្រប់ Limit 24h: EA ផ្អាកការជួញដូរស្វ័យប្រវត្តិ
           if (data.positions.length === 0 && data.history.length > 0) {
             let sumProfit24h = 0;
             data.history.forEach(deal => {
@@ -2031,7 +2131,7 @@
               statusBadge.innerText = "Trading Stopped";
               statusBadge.style.color = "#f6465d";
               statusBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
-              spinnerIcon.classList.add('stopped'); // បញ្ឈប់ការវិលរង្វង់មូល
+              spinnerIcon.classList.add('stopped'); 
             }
           }
         } else {
@@ -2040,7 +2140,7 @@
           connectionBadge.style.backgroundColor = "rgba(246, 70, 93, 0.15)";
         }
 
-        // Render Active Positions
+        // Active Positions Render
         const activeListArea = document.getElementById('active-list-area');
         if (data.positions && data.positions.length > 0) {
           activeListArea.innerHTML = data.positions.map(pos => {
@@ -2061,7 +2161,7 @@
           activeListArea.innerHTML = `<div class="empty-state-text">គ្មានលំដាប់ជួញដូរកំពុងដំណើរការឡើយ</div>`;
         }
 
-        // Render History
+        // History Render
         const historyListArea = document.getElementById('history-list-area');
         if (data.history && data.history.length > 0) {
           historyListArea.innerHTML = data.history.map(his => {
@@ -2082,13 +2182,16 @@
           historyListArea.innerHTML = `<div class="empty-state-text">គ្មានប្រវត្តិប្រតិបត្តិការឡើយ</div>`;
         }
 
-        // Render Journal
+        // Journal Render
         const journalLogArea = document.getElementById('journal-log-area');
         if (data.journal && data.journal.length > 0) {
           journalLogArea.innerHTML = data.journal.map(log => `<div>${log}</div>`).join('');
         }
       })
       .catch(err => console.log("Sync failed: ", err));
+
+      // ហៅមុខងារទាញយកប្រតិបត្តិការដាក់/ដកប្រាក់រៀងរាល់ ២ វិនាទី
+      fetchTransactions();
     }, 2000);
   </script>
 
