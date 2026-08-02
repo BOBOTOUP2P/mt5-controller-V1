@@ -17,7 +17,9 @@ let mt5Status = {
     positions: [],
     history: [],
     journal: [],
-    closedToday: "0.00", // រក្សាទុកតម្លៃចំណេញដែលបានបិទថ្ងៃនេះ
+    closedToday: "0.00", 
+    tp24h: "0.00", // បន្ថែម TP ២៤ម៉ោង
+    sl24h: "0.00", // បន្ថែម SL ២៤ម៉ោង
     lastPing: 0
 };
 
@@ -164,7 +166,7 @@ app.post('/save', (req, res) => {
 });
 
 app.post('/get-settings', (req, res) => {
-    const { balance, equity, positions, history, journal, closed_today } = req.body;
+    const { balance, equity, positions, history, journal, closed_today, tp_24h, sl_24h } = req.body;
     
     let parsedPositions = [];
     let parsedHistory = [];
@@ -180,7 +182,9 @@ app.post('/get-settings', (req, res) => {
         positions: parsedPositions,
         history: parsedHistory,
         journal: parsedJournal,
-        closedToday: closed_today || "0.00", // បញ្ជូនទិន្នន័យចំណេញពិតប្រាកដប្រចាំថ្ងៃ
+        closedToday: closed_today || "0.00",
+        tp24h: tp_24h || "0.00",
+        sl24h: sl_24h || "0.00",
         lastPing: Date.now()
     };
     
@@ -189,7 +193,7 @@ app.post('/get-settings', (req, res) => {
         res.send(data);
     } catch (err) {
         res.send("0.01,0.65,5.00,0,0.50,0.30,XAU/USD");
-      }
+    }
 });
 
 app.get('/api/status', (req, res) => {
